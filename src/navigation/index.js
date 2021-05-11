@@ -21,7 +21,7 @@ import {windowHeight} from "../shared/Const"
 const RootNavigation = () => {
 
     // const [isLoading, setIsLoading] = useState(false)
-    const [logIn, setLogIn] = useState(true)
+    const [logIn, setLogIn] = useState(false)
 
     const Tab = createBottomTabNavigator()
 

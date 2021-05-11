@@ -1,17 +1,8 @@
 import React from "react"
-import {ScrollView, Text, View} from "react-native"
-import {styles} from './styles'
+import {Login} from "./Login"
 
-export function LogInScreen() {
+export function LogInScreen({navigation}) {
     return (
-        <ScrollView contentContainerStyle={{flexGrow: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <View style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                flex: 1,
-            }}>
-                <Text>Log In Screen</Text>
-            </View>
-        </ScrollView>
+        <Login navigation={navigation}/>
     )
 }

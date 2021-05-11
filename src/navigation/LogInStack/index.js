@@ -1,18 +1,14 @@
 import React from "react"
 import {createStackNavigator} from "@react-navigation/stack"
 import {LogInScreen} from "../../screens/LogInScreen"
-import {SingInScreen} from "../../screens/LogInScreen/SingInScreen"
-import {SingUpScreen} from "../../screens/LogInScreen/SingUpScreen"
-import {ForgotPasswordScreen} from "../../screens/LogInScreen/ForgotPasswordScreen"
+import {Register} from "../../screens/LogInScreen/Register"
 
 const LogIn = createStackNavigator()
 
 const LogInStackScreen = () => (
     <LogIn.Navigator headerMode="none" lazy={true}>
-        <LogIn.Screen name="LogInScreen" component={LogInScreen}/>
-        <LogIn.Screen name="SingInScreen" component={SingInScreen}/>
-        <LogIn.Screen name="SingUpScreen" component={SingUpScreen}/>
-        <LogIn.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen}/>
+        <LogIn.Screen name="LoginScreen" component={LogInScreen}/>
+        <LogIn.Screen name="RegisterScreen" component={Register}/>
     </LogIn.Navigator>
 )
 

@@ -10,25 +10,25 @@ LogBox.ignoreAllLogs()
 
 export default function App() {
 
-    const [isReady, useIsReady] = useState(true)
-
-    useEffect(() => {
-        setTimeout(async () => {
-            await useIsReady(false)
-        }, 5000)
-    }, [])
-
-    if (isReady) {
-        return (
-            <View style={{flex: 1}}>
-                <Image
-                    source={require('./src/assets/img/splashScreen.png')}
-                    style={{width: windowWidth, height: windowHeight}}
-                    resizeMode={'cover'}
-                />
-            </View>
-        )
-    }
+    // const [isReady, useIsReady] = useState(true)
+    //
+    // useEffect(() => {
+    //     setTimeout(async () => {
+    //         await useIsReady(false)
+    //     }, 5000)
+    // }, [])
+    //
+    // if (isReady) {
+    //     return (
+    //         <View style={{flex: 1}}>
+    //             <Image
+    //                 source={require('./src/assets/img/splashScreen.png')}
+    //                 style={{width: windowWidth, height: windowHeight}}
+    //                 resizeMode={'cover'}
+    //             />
+    //         </View>
+    //     )
+    // }
 
     return (
         <Provider store={store}>
