@@ -1,12 +1,6 @@
-import {StyleSheet} from "react-native";
-import {
-    BACKGROUND_COLOR,
-    FONT_SIZE,
-    ICON_MUTED_BUTTON,
-    ICON_PLAY_BUTTON,
-    VIDEO_CONTAINER_HEIGHT
-} from "../../shared/MockData";
-import {windowWidth} from "../../shared/Const";
+import {StyleSheet} from "react-native"
+import {FONT_SIZE, ICON_MUTED_BUTTON, ICON_PLAY_BUTTON, VIDEO_CONTAINER_HEIGHT} from "../../shared/MockData"
+import {windowWidth} from "../../shared/Const"
 
 export const styles = StyleSheet.create({
     container: {
@@ -15,10 +9,11 @@ export const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         alignSelf: "stretch",
-        backgroundColor: BACKGROUND_COLOR
+        zIndex: 4,
     },
     wrapper: {
-        backgroundColor: 'blue'
+        marginLeft: 25,
+        marginRight: 25
     },
     nameContainer: {
         height: FONT_SIZE
@@ -34,22 +29,36 @@ export const styles = StyleSheet.create({
     },
     mediaControllerContainer: {
         flex: 1,
-        flexDirection: "row",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-between",
-        // maxHeight: ICON_PLAY_BUTTON.height,
-        // minWidth: windowWidth / 2.0,
-        // maxWidth: windowWidth / 2.0,
         position: 'absolute',
         top: 0,
-        // left: '25%',
-        borderWidth: 1,
-        borderColor: 'blue',
-        borderStyle: 'solid',
         width: windowWidth,
         height: VIDEO_CONTAINER_HEIGHT,
-        // backgroundColor: 'red',
-        zIndex: 1
+        backgroundColor: 'rgba(52, 52, 52, 0.8)',
+        zIndex: 3
+    },
+    mediaControllerContainerTop: {
+        paddingTop: 10,
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: "space-between",
+        alignItems: 'center',
+    },
+    mediaControllerContainerMiddle: {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    mediaControllerContainerBottom: {
+        width: '100%',
+        height: 40,
+        // borderWidth: 1,
+        // borderColor: 'red',
+        // borderStyle: 'solid',
+        zIndex: 0
     },
     playbackContainer: {
         flex: 1,
@@ -57,26 +66,18 @@ export const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         alignSelf: "stretch",
-        borderWidth: 1,
-        borderColor: 'blue',
-        borderStyle: 'solid'
+        height: 20
     },
     playbackSlider: {
         alignSelf: "stretch",
-        borderWidth: 1,
-        borderColor: 'red',
-        borderStyle: 'solid'
+        width: '100%',
+        height: 20,
     },
     timestampRow: {
-        flex: 1,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
         alignSelf: "stretch",
-        minHeight: FONT_SIZE,
-        borderWidth: 1,
-        borderColor: 'red',
-        borderStyle: 'solid'
     },
     text: {
         fontSize: FONT_SIZE,
@@ -85,23 +86,15 @@ export const styles = StyleSheet.create({
     buffering: {
         textAlign: "left",
         paddingLeft: 20,
-        borderWidth: 1,
-        borderColor: 'red',
-        borderStyle: 'solid'
     },
     timestamp: {
         textAlign: "right",
         paddingRight: 20,
-        borderWidth: 1,
-        borderColor: 'red',
-        borderStyle: 'solid'
+        color: '#fff',
+        marginLeft: 20,
+        marginRight: 20
     },
-    button: {
-        backgroundColor: BACKGROUND_COLOR,
-        borderWidth: 1,
-        borderColor: 'red',
-        borderStyle: 'solid'
-    },
+    button: {},
     buttonsContainerBase: {
         flex: 1,
         flexDirection: "row",
@@ -144,6 +137,11 @@ export const styles = StyleSheet.create({
         paddingLeft: 20,
         minWidth: windowWidth,
         maxWidth: windowWidth,
-        backgroundColor: 'red'
-    }
+    },
+    rootView: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignSelf: "stretch",
+    },
 })

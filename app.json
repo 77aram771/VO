@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SlicePrice",
-    "slug": "SlicePrice",
+    "name": "VO",
+    "slug": "VO",
     "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
@@ -12,7 +12,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "requireFullScreen": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
