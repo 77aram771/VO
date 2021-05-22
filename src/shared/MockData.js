@@ -1,7 +1,7 @@
 import {Asset} from "expo-asset"
 import {windowHeight} from "./Const"
 
-class Icon {
+export default class Icon {
     constructor(module, width, height) {
         this.module = module;
         this.width = width;
@@ -31,9 +31,6 @@ export const PLAYLIST = [
     )
 ]
 
-export const ICON_THROUGH_EARPIECE = "speaker-phone"
-export const ICON_THROUGH_SPEAKER = "speaker"
-
 export const ICON_PLAY_BUTTON = new Icon(
     require("../assets/icon/icon-player-play.png"),
     48,
@@ -44,12 +41,6 @@ export const ICON_PAUSE_BUTTON = new Icon(
     require("../assets/icon/icon-player-pause.png"),
     48,
     48
-);
-
-export const ICON_STOP_BUTTON = new Icon(
-    require("../assets/icon/icon-player-pause.png"),
-    22,
-    22
 );
 
 export const ICON_FORWARD_BUTTON = new Icon(
@@ -64,26 +55,8 @@ export const ICON_BACK_BUTTON = new Icon(
     22
 );
 
-export const ICON_LOOP_ALL_BUTTON = new Icon(
-    require("../assets/test/loop_all_button.png"),
-    77,
-    35
-);
-
-export const ICON_LOOP_ONE_BUTTON = new Icon(
-    require("../assets/test/loop_one_button.png"),
-    77,
-    35
-);
-
 export const ICON_MUTED_BUTTON = new Icon(
     require("../assets/test/muted_button.png"),
-    67,
-    58
-);
-
-export const ICON_UNMUTED_BUTTON = new Icon(
-    require("../assets/test/unmuted_button.png"),
     67,
     58
 );
@@ -112,14 +85,221 @@ export const ICON_FULLSCREEN = new Icon(
     40
 )
 
+export const ICON_CHANGE_SECOND_LEFT = new Icon(
+    require("../assets/icon/icon-player-chnage-second-left.png"),
+    24,
+    28
+);
+
+export const ICON_CHANGE_SECOND_RIGHT = new Icon(
+    require("../assets/icon/icon-player-chnage-second-right.png"),
+    24,
+    28
+);
+
+export const ICON_CHECK = new Icon(
+    require("../assets/icon/icon-check.png"),
+    17,
+    13
+);
+
+export const ICON_LIKE = new Icon(
+    require("../assets/icon/icon-like.png"),
+    14,
+    13
+);
+
+export const ICON_SHARE = new Icon(
+    require("../assets/icon/icon-share.png"),
+    16,
+    13
+);
+
+export const ICON_WATCH = new Icon(
+    require("../assets/icon/icon-watch.png"),
+    17,
+    14
+);
+
+export const ICON_INFO = new Icon(
+    require("../assets/icon/icon-info.png"),
+    14,
+    14
+);
+
+export const ICON_USER = new Icon(
+    require("../assets/icon/icon-user.png"),
+    38,
+    38
+);
+
+export const ICON_PLUS = new Icon(
+    require("../assets/icon/icon-plus.png"),
+    8,
+    8
+);
+
+export const ICON_ARROW_DOWN_FOLLOW = new Icon(
+    require("../assets/icon/icon-arrow-down.png"),
+    8,
+    6
+);
+
 
 export const LOOPING_TYPE_ALL = 0;
 export const LOOPING_TYPE_ONE = 1;
-export const LOOPING_TYPE_ICONS = {0: ICON_LOOP_ALL_BUTTON, 1: ICON_LOOP_ONE_BUTTON};
-
 export const DISABLED_OPACITY = 0.5;
 export const FONT_SIZE = 14;
 export const LOADING_STRING = "... loading ...";
-export const BUFFERING_STRING = "...buffering...";
-export const RATE_SCALE = 3.0;
 export const VIDEO_CONTAINER_HEIGHT = windowHeight / 4.2;
+
+export const videoSubModalObject = [
+    {
+        id: 1,
+        title: 'Quality',
+        items: [
+            {
+                id: 1,
+                item: 'Auto(720p)',
+                bool: true
+            },
+            {
+                id: 2,
+                item: '1080p',
+                bool: false
+            },
+            {
+                id: 3,
+                item: '720p',
+                bool: false
+            },
+            {
+                id: 4,
+                item: '480p',
+                bool: false
+            },
+            {
+                id: 5,
+                item: '360p',
+                bool: false
+            },
+            {
+                id: 6,
+                item: '240p',
+                bool: false
+            },
+            {
+                id: 7,
+                item: '144p',
+                bool: false
+            },
+        ],
+        bool: false,
+        icon: new Icon(
+            require("../assets/icon/icon-quality.png"),
+            16,
+            15
+        )
+    },
+    {
+        id: 2,
+        title: 'Captions',
+        items: [
+            {
+                id: 1,
+                item: 'Off',
+                bool: true
+            },
+            {
+                id: 2,
+                item: 'English',
+                bool: false
+            },
+            {
+                id: 3,
+                item: 'French',
+                bool: false
+            },
+            {
+                id: 4,
+                item: 'Arabic',
+                bool: false
+            }
+        ],
+        bool: false,
+        icon: new Icon(
+            require("../assets/icon/icon-captions.png"),
+            16,
+            14
+        )
+    },
+    {
+        id: 3,
+        title: 'Sound Channel',
+        items: [
+            {
+                id: 1,
+                item: 'Main (Arabic)',
+                bool: true
+            },
+            {
+                id: 2,
+                item: 'English',
+                bool: false
+            },
+        ],
+        bool: false,
+        icon: new Icon(
+            require("../assets/icon/icon-sound.png"),
+            18,
+            15
+        )
+    },
+    {
+        id: 4,
+        title: 'Report',
+        items: [
+            {
+                id: 1,
+                item: 'Sexual content',
+                bool: true
+            },
+            {
+                id: 2,
+                item: 'Child abuse',
+                bool: false
+            },
+            {
+                id: 3,
+                item: 'Sexual content',
+                bool: false
+            },
+            {
+                id: 4,
+                item: 'Child abuse',
+                bool: false
+            },
+            {
+                id: 5,
+                item: 'Sexual content',
+                bool: false
+            },
+            {
+                id: 6,
+                item: 'Child abuse',
+                bool: false
+            },
+            {
+                id: 7,
+                item: 'Other',
+                bool: false
+            },
+        ],
+        bool: false,
+        icon: new Icon(
+            require("../assets/icon/icon-report.png"),
+            13,
+            15
+        )
+    }
+]

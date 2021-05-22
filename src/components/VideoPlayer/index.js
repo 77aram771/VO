@@ -16,12 +16,12 @@ import {
     ICON_ARROW_DOWN,
     ICON_MENU_HORIZONTAL,
     ICON_THUMB,
-    ICON_FULLSCREEN,
+    ICON_FULLSCREEN, ICON_CHANGE_SECOND_LEFT, ICON_CHANGE_SECOND_RIGHT,
 } from "../../shared/MockData"
 import * as ScreenOrientation from "expo-screen-orientation"
 import {styles} from "./style"
 import {AntDesign} from '@expo/vector-icons'
-// import * as VideoThumbnails from 'expo-video-thumbnails';
+import * as VideoThumbnails from 'expo-video-thumbnails'
 
 
 export default class VideoPlayer extends Component {
@@ -109,6 +109,7 @@ export default class VideoPlayer extends Component {
     _mountVideo = async component => {
         this._video = component
         await this._loadNewPlaybackInstance(false)
+        console.log('this._video', this._video)
     }
 
     _updateScreenForLoading(isLoading) {
@@ -228,7 +229,10 @@ export default class VideoPlayer extends Component {
         }
     }
 
-    _onSeekSliderValueChange = () => {
+    _onSeekSliderValueChange = async () => {
+        const status = await this._video.getStatusAsync();
+        const curPos = status.positionMillis;
+        await this.generateThumbnail(curPos)
         if (this.playbackInstance != null && !this.isSeeking) {
             this.isSeeking = true;
             this.shouldPlayAtEndOfSeek = this.state.shouldPlay;
@@ -289,24 +293,24 @@ export default class VideoPlayer extends Component {
     }
 
     _onFullscreenPressed = async () => {
-        // this.props.test()
-        this.setState({
-            fullscreen: !this.state.fullscreen
-        }, async () => {
-            try {
-                // this._video.presentFullscreenPlayer()
-            } catch (error) {
-                console.log(error.toString())
-            }
-        })
-        if (!this.state.fullscreen) {
+        this.props.changeFullScree()
+        // this.setState({
+        //     fullscreen: !this.state.fullscreen
+        // }, async () => {
+        //     try {
+        //         // this._video.presentFullscreenPlayer()
+        //     } catch (error) {
+        //         console.log(error.toString())
+        //     }
+        // })
+        if (!this.props.fullScreenTrigger) {
             await this.changeScreenOrientation()
         } else {
             await this.changeScreenOrientation2()
         }
     }
 
-    handleTest = () => {
+    handleShowController = () => {
         this.setState({
             controllerNone: false
         }, () => {
@@ -338,38 +342,48 @@ export default class VideoPlayer extends Component {
         // }, 2000)
     }
 
-    // generateThumbnail = async () => {
-    //     try {
-    //         const {uri} = await VideoThumbnails.getThumbnailAsync(
-    //             'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-    //             {
-    //                 time: 100000,
-    //             }
-    //         );
-    //         // setImage(uri);
-    //     } catch (e) {
-    //         console.warn(e);
-    //     }
-    // };
+    generateThumbnail = async (mill) => {
+        console.log('mill', mill)
+        const {uri} = await VideoThumbnails.getThumbnailAsync(
+            PLAYLIST[this.index].uri,
+            {
+                time: 1000,
+            }
+        );
+        this.setState({image: uri})
+        console.log('image', this.state.image)
+    };
+
+    skip = async (bool) => {
+        const status = await this._video.getStatusAsync();
+        const curPos = status.positionMillis;
+        const tenSeconds = 10000;
+        const newPos = bool ? curPos + tenSeconds : curPos - tenSeconds;
+        this._video.setPositionAsync(newPos);
+    }
 
     render() {
+        const {
+            closeModal,
+            openSubModal,
+            changeModal,
+            changeFullScree,
+            openModalTrigger,
+            changeModalTrigger,
+            fullScreenTrigger
+        } = this.props
         return (
-            <View
-                style={[
-                    styles.container,
-                    this.state.fullscreen ? {
-                            paddingTop: 0
-                        }
-                        : {
-                            paddingTop: this.state.changeModalTrigger ? 40 : 0
-                        }
-                ]}
-            >
+            <View style={[
+                styles.container,
+                {
+                    paddingTop: fullScreenTrigger || changeModalTrigger ? 0 : 40
+                }
+            ]}>
                 <View style={[styles.rootView, {height: '100%'}]}>
                     <TouchableHighlight
                         style={
-                            this.state.fullscreen
-                                ? !this.props.changeModalTrigger
+                            fullScreenTrigger
+                                ? !changeModalTrigger
                                 ? {
                                     width: '100%',
                                     height: '100%',
@@ -377,21 +391,17 @@ export default class VideoPlayer extends Component {
                                 : {
                                     width: windowWidth / 2.5,
                                     height: windowHeight / 10,
-                                    borderWidth: 1,
-                                    borderColor: 'red',
-                                    borderStyle: 'solid',
                                 }
                                 : null
                         }
-                        onPress={() => this.handleTest()}
+                        onPress={() => this.handleShowController()}
                     >
                         <Video
                             ref={this._mountVideo}
                             style={
-                                !this.state.fullscreen
-                                    ? !this.props.changeModalTrigger
-                                    ? [
-                                        styles.video,
+                                !fullScreenTrigger
+                                    ? !changeModalTrigger
+                                    ? [styles.video,
                                         {
                                             opacity: this.state.showVideo ? 1.0 : 0.0,
                                             width: windowWidth,
@@ -401,16 +411,8 @@ export default class VideoPlayer extends Component {
                                     : {
                                         width: windowWidth / 2.5,
                                         height: windowHeight / 10,
-                                        borderWidth: 1,
-                                        borderColor: 'red',
-                                        borderStyle: 'solid',
                                     }
-                                    : [
-                                        StyleSheet.absoluteFill,
-                                        {
-                                            height: '100%'
-                                        }
-                                    ]
+                                    : [StyleSheet.absoluteFill, {height: '100%'}]
                             }
                             resizeMode='cover'
                             onPlaybackStatusUpdate={this._onPlaybackStatusUpdate}
@@ -425,23 +427,23 @@ export default class VideoPlayer extends Component {
                     <View
                         style={[
                             styles.mediaControllerContainer,
-                            !this.props.changeModalTrigger
+                            !changeModalTrigger
                                 ? {
                                     display: this.state.controllerNone ? 'none' : 'flex',
                                     opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
                                     width: '100%',
-                                    height: this.state.fullscreen ? '100%' : VIDEO_CONTAINER_HEIGHT,
-                                    paddingTop: this.state.fullscreen ? 20 : 0,
-                                    paddingBottom: this.state.fullscreen ? 40 : 0,
-                                    paddingLeft: this.state.fullscreen ? 50 : 0,
-                                    paddingRight: this.state.fullscreen ? 50 : 0
+                                    height: fullScreenTrigger ? '100%' : VIDEO_CONTAINER_HEIGHT,
+                                    paddingTop: fullScreenTrigger ? 20 : 0,
+                                    paddingBottom: fullScreenTrigger ? 40 : 0,
+                                    paddingLeft: fullScreenTrigger ? 50 : 0,
+                                    paddingRight: fullScreenTrigger ? 50 : 0
                                 }
                                 : {display: 'none'}
                         ]}
                     >
                         <View style={styles.mediaControllerContainerTop}>
                             {
-                                this.state.fullscreen
+                                fullScreenTrigger
                                     ? (
                                         <Text
                                             style={{
@@ -454,30 +456,48 @@ export default class VideoPlayer extends Component {
                                     : (
                                         <TouchableOpacity
                                             style={styles.wrapper}
-                                            onPress={this.props.changeModal}
+                                            onPress={changeModal}
                                             disabled={this.state.isLoading}
                                         >
                                             <Image style={styles.button} source={ICON_ARROW_DOWN.module}/>
                                         </TouchableOpacity>
                                     )
                             }
-
                             <TouchableOpacity
                                 style={styles.wrapper}
-                                onPress={() => alert('test')}
+                                onPress={openSubModal}
                                 disabled={this.state.isLoading}
                             >
                                 <Image style={styles.button} source={ICON_MENU_HORIZONTAL.module}/>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.mediaControllerContainerMiddle}>
-                            <TouchableOpacity
-                                style={styles.wrapper}
-                                onPress={this._onBackPressed}
-                                disabled={this.state.isLoading}
-                            >
-                                <Image style={styles.button} source={ICON_BACK_BUTTON.module}/>
-                            </TouchableOpacity>
+                            {
+                                !fullScreenTrigger
+                                    ? (
+                                        <TouchableOpacity
+                                            style={styles.wrapper}
+                                            onPress={this._onBackPressed}
+                                            disabled={this.state.isLoading}
+                                        >
+                                            <Image style={styles.button} source={ICON_BACK_BUTTON.module}/>
+                                        </TouchableOpacity>
+                                    )
+                                    : (
+                                        <TouchableOpacity
+                                            style={[styles.wrapper,
+                                                {
+                                                    marginRight: windowWidth / 2
+                                                }
+                                            ]}
+                                            onPress={() => this.skip(false)}
+                                            disabled={this.state.isLoading}
+                                        >
+                                            <Image style={styles.button} source={ICON_CHANGE_SECOND_RIGHT.module}/>
+                                        </TouchableOpacity>
+                                    )
+                            }
+
                             {
                                 this.state.isPlaying
                                     ? (
@@ -505,13 +525,32 @@ export default class VideoPlayer extends Component {
                                         </TouchableOpacity>
                                     )
                             }
-                            <TouchableOpacity
-                                style={styles.wrapper}
-                                onPress={this._onForwardPressed}
-                                disabled={this.state.isLoading}
-                            >
-                                <Image style={styles.button} source={ICON_FORWARD_BUTTON.module}/>
-                            </TouchableOpacity>
+                            {
+                                !fullScreenTrigger
+                                    ? (
+                                        <TouchableOpacity
+                                            style={styles.wrapper}
+                                            onPress={this._onForwardPressed}
+                                            disabled={this.state.isLoading}
+                                        >
+                                            <Image style={styles.button} source={ICON_FORWARD_BUTTON.module}/>
+                                        </TouchableOpacity>
+                                    )
+                                    : (
+                                        <TouchableOpacity
+                                            style={[styles.wrapper,
+                                                {
+                                                    marginLeft: windowWidth / 2
+                                                }
+                                            ]}
+                                            onPress={() => this.skip(true)}
+                                            disabled={this.state.isLoading}
+                                        >
+                                            <Image style={styles.button} source={ICON_CHANGE_SECOND_LEFT.module}/>
+                                        </TouchableOpacity>
+                                    )
+                            }
+
                         </View>
                         <View style={styles.mediaControllerContainerBottom}>
                             <View
@@ -541,11 +580,24 @@ export default class VideoPlayer extends Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
+                                {
+                                    this.state.image != null
+                                        ? (
+                                            <View
+                                                style={{
+                                                    width: 100,
+                                                    height: 55,
+                                                    position: 'absolute',
+                                                    top: 0
+                                                }}
+                                            >
+                                                <Image source={this.state.image}/>
+                                            </View>)
+                                        : null
+                                }
                                 <Slider
                                     style={styles.playbackSlider}
-                                    // trackImage={ICON_TRACK_1.module}
                                     thumbImage={ICON_THUMB.module}
-                                    // thumbTintColor={'#0072C6'}
                                     minimumTrackTintColor={'#244EFF'}
                                     maximumTrackTintColor={'#37426E'}
                                     value={this._getSeekSliderPosition()}
@@ -557,7 +609,7 @@ export default class VideoPlayer extends Component {
                         </View>
                     </View>
                     {
-                        this.props.changeModalTrigger
+                        changeModalTrigger
                             ? (
                                 <View
                                     style={{
@@ -624,7 +676,7 @@ export default class VideoPlayer extends Component {
                                         }
                                     </View>
                                     <TouchableOpacity
-                                        onPress={() => this.props.closeModal()}
+                                        onPress={() => closeModal()}
                                         style={{
                                             borderWidth: 1,
                                             borderColor: 'red',

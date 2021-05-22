@@ -8,12 +8,12 @@ export const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        // width: windowWidth,
-        // height: windowHeight
+        backgroundColor: '#000'
     },
     modalView: {
         backgroundColor: 'white',
-        alignItems: 'center',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
         // width: windowWidth,
         // height: windowHeight
     },
@@ -130,5 +130,19 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#92BBD9'
-    }
+    },
+    linearGradient: {
+        flex: 1,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderRadius: 5
+    },
+    buttonText: {
+        fontSize: 18,
+        fontFamily: 'Gill Sans',
+        textAlign: 'center',
+        margin: 10,
+        color: '#ffffff',
+        backgroundColor: 'transparent',
+    },
 });

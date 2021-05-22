@@ -4,8 +4,9 @@ import RootNavigation from "./src/navigation"
 import {Provider} from 'react-redux'
 import {store} from './src/store'
 import {windowHeight, windowWidth} from "./src/shared/Const"
+import {StatusBar} from "expo-status-bar";
 
-LogBox.ignoreLogs(['Warning: ...'])
+// LogBox.ignoreLogs(['Warning: ...'])
 LogBox.ignoreAllLogs()
 
 export default function App() {
@@ -33,8 +34,12 @@ export default function App() {
     }
 
     return (
-        <Provider store={store}>
-            <RootNavigation/>
-        </Provider>
+        <>
+            <StatusBar style="light"/>
+            <Provider store={store}>
+                <RootNavigation/>
+            </Provider>
+        </>
+
     )
 }

@@ -69,6 +69,7 @@ export const styles = StyleSheet.create({
         height: 20
     },
     playbackSlider: {
+        position: 'relative',
         alignSelf: "stretch",
         width: '100%',
         height: 20,
@@ -94,7 +95,9 @@ export const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20
     },
-    button: {},
+    button: {
+        // backgroundColor: 'red'
+    },
     buttonsContainerBase: {
         flex: 1,
         flexDirection: "row",
@@ -143,5 +146,20 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignSelf: "stretch",
+    },
+    slider: {
+        width: '100%',
+        alignSelf: 'center'
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    customLabel: {
+        fontSize: 20
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
     },
 })
