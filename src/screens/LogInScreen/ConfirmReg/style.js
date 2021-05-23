@@ -47,4 +47,10 @@ export const style = StyleSheet.create({
         fontSize: 14,
         color: '#a4aeb4',
     },
+    apierrorText: {
+        position: 'relative',
+        color: '#ff0000',
+        fontSize: 14,
+        marginBottom: 10,
+    },
 });

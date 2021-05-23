@@ -2,33 +2,18 @@ import axios from 'axios'
 import {fetchData, fetchSuccess, fetchError} from '../actions/AuthApiAction'
 import {AsyncStorage} from "react-native";
 
-export const AuthApiActionCreatorPhone = (url) => (dispatch) => {
+export const AuthSignIn = (url, body) => (dispatch) => {
     dispatch(fetchData())
     return new Promise(() => {
         axios
-            .post(url)
+            .post(url, body)
             .then((response) => {
-                // dispatch(fetchSuccess(response.data))
-                // console.log('response', response)
+                // console.log(response)
+                dispatch(fetchSuccess(response))
             })
             .catch((error) => {
                 dispatch(fetchError(error))
-                console.log(error)
-            })
-    })
-}
-
-export const AuthApiActionCreatorCode = (url) => (dispatch) => {
-    dispatch(fetchData())
-    return new Promise(() => {
-        axios
-            .post(url)
-            .then((response) => {
-                dispatch(fetchSuccess(response.data))
-            })
-            .catch((error) => {
-                dispatch(fetchError(error))
-                console.log(error)
+                // console.log(error)
             })
     })
 }

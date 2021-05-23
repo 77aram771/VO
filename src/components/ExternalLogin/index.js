@@ -1,26 +1,30 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Text, View, Image, TouchableWithoutFeedback} from "react-native"
 import {style} from "./style"
 
-export const ExternalLogin = () => {
+export const ExternalLogin = ({handlePress}) => {
+
+
+
+
     return (
         <View style={style.container}>
             <Text style={style.socialText}>Or sign-up with</Text>
             <View style={style.socialIcons}>
-                <TouchableWithoutFeedback style={style.facebook}>
+                <TouchableWithoutFeedback style={style.facebook} onPress={() => handlePress('facebook')}>
                     <Image
                         style={style.checkedImg}
                         source={require('../../assets/images/icons/fb.png')}
                     />
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback style={style.apple}>
+                <TouchableWithoutFeedback style={style.apple} onPress={() => handlePress('apple')}>
                     <Image
                         style={style.checkedImg}
 
                         source={require('../../assets/images/icons/apple.png')}
                     />
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback style={style.google}>
+                <TouchableWithoutFeedback style={style.google} onPress={() => handlePress('google')}>
                     <Image
                         style={style.checkedImg}
 

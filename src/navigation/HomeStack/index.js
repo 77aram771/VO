@@ -6,8 +6,9 @@ import {LinearGradient} from "expo-linear-gradient"
 import {BlackPearl, DeepSapphire} from "../../shared/Colors"
 import {HeaderLogo} from "../../components/HeaderLogo"
 import {HeaderRightSection} from "../../components/HeaderRightSection"
+import {Notifications} from "../../screens/HomeScreen/Notifications"
 
-const HomeStackScreen = () => {
+const HomeStackScreen = ({navigation}) => {
 
     const Home = createStackNavigator()
 
@@ -35,10 +36,11 @@ const HomeStackScreen = () => {
                         />
                     ),
                     headerLeft: () => <HeaderLogo/>,
-                    headerRight: () => (<HeaderRightSection/>),
+                    headerRight: () => (<HeaderRightSection navigation={navigation}/>),
                 }}
             />
             <Home.Screen name="Details" component={DetailsScreen}/>
+            <Home.Screen name="NotificationsScreen" component={Notifications}/>
         </Home.Navigator>
     )
 }
