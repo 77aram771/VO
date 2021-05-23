@@ -5,8 +5,10 @@ import {Provider} from 'react-redux'
 import {store} from './src/store'
 import {windowHeight, windowWidth} from "./src/shared/Const"
 import {StatusBar} from "expo-status-bar";
+import * as ScreenOrientation from "expo-screen-orientation"
 
-// LogBox.ignoreLogs(['Warning: ...'])
+
+LogBox.ignoreLogs(['Warning: ...'])
 LogBox.ignoreAllLogs()
 
 export default function App() {
@@ -14,11 +16,15 @@ export default function App() {
     const [isReady, useIsReady] = useState(true)
 
     useEffect(() => {
-        setTimeout(async () => {
-            await useIsReady(false)
-        }, 5000)
-        YellowBox.ignoreWarnings(['Animated: `useNativeDriver, loadAsync`']);
 
+        (async () => {
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)
+
+            setTimeout(async () => {
+                await useIsReady(false)
+            }, 5000)
+            YellowBox.ignoreWarnings(['Animated: `useNativeDriver, loadAsync`']);
+        })()
     }, [])
 
     if (isReady) {

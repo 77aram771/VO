@@ -6,14 +6,14 @@ export const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        alignSelf: "stretch",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+        alignSelf: "flex-start",
         zIndex: 4,
     },
     wrapper: {
         marginLeft: 25,
-        marginRight: 25
+        marginRight: 25,
     },
     nameContainer: {
         height: FONT_SIZE
@@ -161,5 +161,13 @@ export const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
+    },
+    buttonText: {
+        fontSize: 18,
+        fontFamily: 'Gill Sans',
+        textAlign: 'center',
+        margin: 10,
+        color: '#ffffff',
+        backgroundColor: 'transparent',
     },
 })
