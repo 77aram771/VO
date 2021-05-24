@@ -1,7 +1,11 @@
 import {Asset} from "expo-asset"
 import {windowHeight} from "./Const"
 
-export default class Icon {
+import img1 from '../assets/img/img-video1.png'
+import img2 from '../assets/img/img-video2.png'
+import img3 from '../assets/img/img-video3.png'
+
+class Icon {
     constructor(module, width, height) {
         this.module = module;
         this.width = width;
@@ -109,6 +113,12 @@ export const ICON_LIKE = new Icon(
     13
 );
 
+export const ICON_LIKE_ACTIVE = new Icon(
+    require("../assets/icon/icon-like-active.png"),
+    14,
+    13
+);
+
 export const ICON_SHARE = new Icon(
     require("../assets/icon/icon-share.png"),
     16,
@@ -133,6 +143,12 @@ export const ICON_USER = new Icon(
     38
 );
 
+export const ICON_USER2 = new Icon(
+    require("../assets/icon/icon-user.png"),
+    20,
+    20
+);
+
 export const ICON_PLUS = new Icon(
     require("../assets/icon/icon-plus.png"),
     8,
@@ -143,6 +159,60 @@ export const ICON_ARROW_DOWN_FOLLOW = new Icon(
     require("../assets/icon/icon-arrow-down.png"),
     8,
     6
+);
+
+export const ICON_PLAYER_PAUSE_MINI = new Icon(
+    require("../assets/icon/icon-player-pause-mini.png"),
+    16,
+    16
+);
+
+export const ICON_PLAYER_PLAY_MINI = new Icon(
+    require("../assets/icon/icon-player-play-mini.png"),
+    16,
+    16
+);
+
+export const ICON_PLAYER_CLOSE_MINI = new Icon(
+    require("../assets/icon/icon-player-close-mini.png"),
+    16,
+    16
+);
+
+export const ICON_PLAYER_CLOSE_INFO = new Icon(
+    require("../assets/icon/icon-info-close.png"),
+    16,
+    16
+);
+
+export const IMG_PLAYER_1 = new Icon(
+    require("../assets/img/img-video1.png"),
+    136,
+    76
+);
+
+export const IMG_PLAYER_2 = new Icon(
+    require("../assets/img/img-video2.png"),
+    136,
+    76
+);
+
+export const IMG_PLAYER_3 = new Icon(
+    require("../assets/img/img-video3.png"),
+    136,
+    76
+);
+
+export const ICON_COMMENT_LIKE = new Icon(
+    require("../assets/icon/icon-comment-like.png"),
+    9,
+    8
+);
+
+export const ICON_COMMENT = new Icon(
+    require("../assets/icon/icon-comment.png"),
+    10,
+    9
 );
 
 
@@ -302,4 +372,131 @@ export const videoSubModalObject = [
             15
         )
     }
+]
+
+export const videoPlayerUpNextData = [
+    {
+        id: 1,
+        title: 'Losing Alice',
+        text: 'Forty-eight-year-old film director Alice becomes obsessed with a 24-year-',
+        userName: 'John Doe',
+        userIcon: ICON_USER2,
+        followNumber: 66,
+        videoTime: '56:20',
+        videoImage: img1
+    },
+    {
+        id: 2,
+        title: 'California',
+        text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+        userName: 'John Doe',
+        userIcon: ICON_USER2,
+        followNumber: 66,
+        videoTime: '56:20',
+        videoImage: img2
+    },
+    {
+        id: 3,
+        title: 'Stranger Things',
+        text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+        userName: 'John Doe',
+        userIcon: ICON_USER2,
+        followNumber: 66,
+        videoTime: '56:20',
+        videoImage: img3
+    },
+]
+
+export const CommentData = [
+    {
+        id: 1,
+        userIcon: ICON_USER2,
+        userName: 'Lisa Black',
+        likeNumber: 10,
+        date: '2d',
+        commentText: 'OMG',
+        commentArray: [
+            {
+                id: 1,
+                userIcon: ICON_USER2,
+                userName: 'Lisa Black',
+                likeNumber: 10,
+                date: '1d',
+                commentText: 'OMG2',
+            }
+        ]
+    },
+    {
+        id: 2,
+        userIcon: ICON_USER2,
+        userName: 'Lisa Black',
+        likeNumber: 10,
+        date: '2d',
+        commentText: 'OMG',
+        commentArray: [
+            {
+                id: 1,
+                userIcon: ICON_USER2,
+                userName: 'Lisa Black',
+                likeNumber: 10,
+                date: '1d',
+                commentText: 'OMG2',
+            }
+        ]
+    },
+    {
+        id: 3,
+        userIcon: ICON_USER2,
+        userName: 'Lisa Black',
+        likeNumber: 10,
+        date: '2d',
+        commentText: 'OMG',
+        commentArray: [
+            {
+                id: 1,
+                userIcon: ICON_USER2,
+                userName: 'Lisa Black',
+                likeNumber: 10,
+                date: '1d',
+                commentText: 'OMG2',
+            }
+        ]
+    },
+    {
+        id: 4,
+        userIcon: ICON_USER2,
+        userName: 'Lisa Black',
+        likeNumber: 10,
+        date: '2d',
+        commentText: 'OMG',
+        commentArray: [
+            {
+                id: 1,
+                userIcon: ICON_USER2,
+                userName: 'Lisa Black',
+                likeNumber: 10,
+                date: '1d',
+                commentText: 'OMG2',
+            }
+        ]
+    },
+
+]
+
+export const tabsData = [
+    {
+        id: 1,
+        title: 'Up Next',
+        active: true
+    },
+    {
+        id: 2,
+        title: 'Comments',
+        active: false
+    },
+    {
+        id: 3,
+        title: 'Episodes',
+        active: false
+    },
 ]

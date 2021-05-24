@@ -2,21 +2,11 @@ import React, {useState, useContext} from "react"
 import {View, Text, ScrollView, TouchableOpacity, Image} from "react-native"
 import GestureRecognizer from 'react-native-swipe-gestures'
 import ModalWrapper from "react-native-modal-wrapper"
-import {LinearGradient} from "expo-linear-gradient"
-import Icon, {
-    ICON_CHECK,
-    ICON_INFO,
-    ICON_LIKE,
-    ICON_SHARE,
-    ICON_USER,
-    ICON_WATCH,
-    ICON_PLUS,
-    ICON_ARROW_DOWN_FOLLOW
-} from "../../shared/MockData"
+import {videoSubModalObject} from "../../shared/MockData"
 import Context from "../../../Context"
 import VideoPlayer from "../../components/VideoPlayer"
 import {styles} from "./style"
-import {windowHeight, windowWidth} from "../../shared/Const"
+import {windowHeight} from "../../shared/Const"
 
 const config = {
     velocityThreshold: 0.3,
@@ -28,156 +18,7 @@ export function HomeScreen({navigation}) {
     const {fullScreen} = useContext(Context)
     const [changeFullScreen, setChangeFullScreen] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
-    const [subModalData, setSubModalData] = useState([
-        {
-            id: 1,
-            title: 'Quality',
-            items: [
-                {
-                    id: 1,
-                    item: 'Auto(720p)',
-                    bool: true
-                },
-                {
-                    id: 2,
-                    item: '1080p',
-                    bool: false
-                },
-                {
-                    id: 3,
-                    item: '720p',
-                    bool: false
-                },
-                {
-                    id: 4,
-                    item: '480p',
-                    bool: false
-                },
-                {
-                    id: 5,
-                    item: '360p',
-                    bool: false
-                },
-                {
-                    id: 6,
-                    item: '240p',
-                    bool: false
-                },
-                {
-                    id: 7,
-                    item: '144p',
-                    bool: false
-                },
-            ],
-            bool: false,
-            icon: new Icon(
-                require("../../assets/icon/icon-quality.png"),
-                16,
-                15
-            )
-        },
-        {
-            id: 2,
-            title: 'Captions',
-            items: [
-                {
-                    id: 1,
-                    item: 'Off',
-                    bool: true
-                },
-                {
-                    id: 2,
-                    item: 'English',
-                    bool: false
-                },
-                {
-                    id: 3,
-                    item: 'French',
-                    bool: false
-                },
-                {
-                    id: 4,
-                    item: 'Arabic',
-                    bool: false
-                }
-            ],
-            bool: false,
-            icon: new Icon(
-                require("../../assets/icon/icon-captions.png"),
-                16,
-                14
-            )
-        },
-        {
-            id: 3,
-            title: 'Sound Channel',
-            items: [
-                {
-                    id: 1,
-                    item: 'Main (Arabic)',
-                    bool: true
-                },
-                {
-                    id: 2,
-                    item: 'English',
-                    bool: false
-                },
-            ],
-            bool: false,
-            icon: new Icon(
-                require("../../assets/icon/icon-sound.png"),
-                18,
-                15
-            )
-        },
-        {
-            id: 4,
-            title: 'Report',
-            items: [
-                {
-                    id: 1,
-                    item: 'Sexual content',
-                    bool: true
-                },
-                {
-                    id: 2,
-                    item: 'Child abuse',
-                    bool: false
-                },
-                {
-                    id: 3,
-                    item: 'Sexual content',
-                    bool: false
-                },
-                {
-                    id: 4,
-                    item: 'Child abuse',
-                    bool: false
-                },
-                {
-                    id: 5,
-                    item: 'Sexual content',
-                    bool: false
-                },
-                {
-                    id: 6,
-                    item: 'Child abuse',
-                    bool: false
-                },
-                {
-                    id: 7,
-                    item: 'Other',
-                    bool: false
-                },
-            ],
-            bool: false,
-            icon: new Icon(
-                require("../../assets/icon/icon-report.png"),
-                13,
-                15
-            )
-        }
-    ])
+    const [subModalData, setSubModalData] = useState(videoSubModalObject)
     const [subModalVisible, setSubModalVisible] = useState(false)
     const [changeModal, setChangeModal] = useState(false)
     const [changeSubModal, setChangeSubModal] = useState(false)
@@ -228,18 +69,7 @@ export function HomeScreen({navigation}) {
     }
 
     const handleChangeSelect = (id) => {
-        console.log('id', id);
-        // setSubModalData(subModalData[sectionId].items.map(item => {
-        //     console.log('item', item)
-        //     item.bool = false
-        //     if (item.id === id) {
-        //         item.bool = !item.bool
-        //     }
-        //     return item;
-        // }))
         setChangeSubModal(!changeSubModal)
-
-
         let newObj = subModalData[sectionId].items.map(item => {
             console.log('item', item)
             item.bool = false
@@ -272,8 +102,9 @@ export function HomeScreen({navigation}) {
                 showOverlay={false}
                 style={changeModal ? (() => {
                     return {
-                        bottom: 0,
-                    };
+                        // position: 'relative',
+                        // top: 0,
+                    }
                 })() : {}}
                 visible={modalVisible}
             >
@@ -286,11 +117,12 @@ export function HomeScreen({navigation}) {
                     config={config}
                     style={changeModal
                         ? {
+                            alignSelf: 'flex-end',
                             height: windowHeight / 10,
-                            backgroundColor: '#000'
+                            backgroundColor: '#000',
                         }
                         : {
-                            backgroundColor: '#000'
+                            backgroundColor: '#000',
                         }
                     }
                 >
@@ -318,7 +150,7 @@ export function HomeScreen({navigation}) {
                                 subModalData={subModalData}
                                 changeSubModal={changeSubModal}
                                 changeFullScreen={changeFullScreen}
-                                changeFollow={changeFullScreen}
+                                changeFollow={changeFollow}
                                 handleChangeSelect={handleChangeSelect}
                                 handleChangeSectionModal={handleChangeSectionModal}
                                 handleChangeFollow={handleChangeFollow}

@@ -1,5 +1,15 @@
 import React, {Component} from "react"
-import {Image, Slider, Text, TouchableOpacity, View, StyleSheet, ScrollView} from "react-native"
+import {
+    Image,
+    Slider,
+    Text,
+    TouchableOpacity,
+    View,
+    StyleSheet,
+    ScrollView,
+    Share,
+    KeyboardAvoidingView
+} from "react-native"
 import {Audio, Video} from "expo-av"
 import {windowHeight, windowWidth} from "../../shared/Const"
 import {
@@ -21,20 +31,24 @@ import {
     ICON_CHANGE_SECOND_RIGHT,
     ICON_CHECK,
     ICON_LIKE,
+    ICON_LIKE_ACTIVE,
     ICON_SHARE,
     ICON_WATCH,
     ICON_INFO,
     ICON_USER,
     ICON_PLUS,
-    ICON_ARROW_DOWN_FOLLOW
+    ICON_ARROW_DOWN_FOLLOW,
+    ICON_PLAYER_PAUSE_MINI,
+    ICON_PLAYER_CLOSE_MINI,
+    ICON_PLAYER_CLOSE_INFO,
+    ICON_PLAYER_PLAY_MINI
 } from "../../shared/MockData"
 import * as ScreenOrientation from "expo-screen-orientation"
 import {styles} from "./style"
-import {AntDesign} from '@expo/vector-icons'
 import * as VideoThumbnails from 'expo-video-thumbnails'
 import ModalWrapper from "react-native-modal-wrapper"
 import {LinearGradient} from "expo-linear-gradient"
-import VideoTabs from "../VideoTabs"
+import {VideoTabs} from "../VideoTabs"
 
 export default class VideoPlayer extends Component {
 
@@ -70,7 +84,10 @@ export default class VideoPlayer extends Component {
             maxSeek: 0,
             play: false,
             image: null,
-            sliderValue: 0
+            sliderValue: 0,
+            likeActive: false,
+            infoModal: false,
+            autoPlay: false
         }
     }
 
@@ -208,10 +225,6 @@ export default class VideoPlayer extends Component {
         }
     }
 
-    _onFullscreenUpdate = event => {
-        console.log(`FULLSCREEN UPDATE : ${JSON.stringify(event.fullscreenUpdate)}`)
-    }
-
     _advanceIndex(forward) {
         this.index = (this.index + (forward ? 1 : PLAYLIST.length - 1)) % PLAYLIST.length
     }
@@ -279,7 +292,7 @@ export default class VideoPlayer extends Component {
     }
 
     _getSeekSliderPosition() {
-        console.log('_getSeekSliderPosition 1')
+        // console.log('_getSeekSliderPosition 1')
         if (
             this.playbackInstance != null &&
             this.state.playbackInstancePosition != null &&
@@ -395,6 +408,48 @@ export default class VideoPlayer extends Component {
         this._video.setPositionAsync(newPos)
     }
 
+    handleLike = () => {
+        this.setState({
+            likeActive: !this.state.likeActive
+        })
+    }
+
+    async onShare() {
+        try {
+            const result = await Share.share({
+                url: PLAYLIST[this.index].uri,
+                message: PLAYLIST[this.index].name,
+            })
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    handleInfoModal = (bool) => {
+        this.setState({
+            infoModal: bool
+        })
+    }
+
+    handleAutoPlay = (value) => {
+        console.log('value', value)
+        this.setState({
+            autoPlay: !this.state.autoPlay
+        }, () => {
+            console.log('this.state.autoPlay', this.state.autoPlay)
+        })
+    }
+
     render() {
         const {
             closeModal,
@@ -416,14 +471,13 @@ export default class VideoPlayer extends Component {
             changeFollow
         } = this.props
 
-        const multiplier = 1.15
+        const multiplier = fullScreenTrigger ? 0.5 : 1.10
         const maximumValue = this.state.playbackInstanceDuration
         const logic = maximumValue * multiplier
 
-        const left =
-            this.state.maxSeek >= 100000000
-                ? this.state.maxSeek * windowWidth / logic
-                : this.state.maxSeek * windowWidth / logic
+        const left = this.state.maxSeek >= 1000000000
+            ? this.state.maxSeek * windowWidth / logic
+            : this.state.maxSeek * windowWidth / logic
 
         return (
             <>
@@ -585,146 +639,463 @@ export default class VideoPlayer extends Component {
                         }
                     </View>
                 </ModalWrapper>
-                <View
-                    style={[
-                        styles.container,
-                        {
-                            paddingTop: fullScreenTrigger || changeModalTrigger ? 0 : 40,
-                        }
-                    ]}
+                <ModalWrapper
+                    containerStyle={{flexDirection: 'row', alignItems: 'flex-end'}}
+                    onRequestClose={() => this.handleInfoModal(false)}
+                    style={{
+                        flex: 1,
+                        borderTopRightRadius: 18,
+                        borderTopLeftRadius: 18,
+                        backgroundColor: '#161827',
+                    }}
+                    visible={this.state.infoModal}
                 >
-                    <View style={[styles.rootView]}>
-                        <TouchableOpacity
-                            style={
-                                fullScreenTrigger
-                                    ? !changeModalTrigger
-                                    ? {
-                                        width: '100%',
-                                        // height: '100%',
-                                    }
-                                    : {
-                                        width: windowWidth / 2.5,
-                                        height: windowHeight / 10,
-                                    }
-                                    : null
-                            }
-                            onPress={() => this.handleShowController()}
+                    <View
+                        style={{
+                            width: '100%',
+                            height: windowHeight / 1.4,
+                            borderTopRightRadius: 20,
+                            borderTopLeftRadius: 20,
+                            paddingBottom: 30,
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <View
+                            style={{
+                                width: '100%',
+                                borderBottomColor: '#373943',
+                                borderBottomWidth: 1
+                            }}
                         >
-                            <Video
-                                ref={this._mountVideo}
+                            <View
+                                style={{
+                                    width: '100%',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    paddingTop: 20,
+                                    paddingLeft: 20,
+                                    paddingRight: 20,
+                                    paddingBottom: 20,
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <Text style={{color: '#A4AEB4', fontSize: 20}}>
+                                    Description
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={() => this.handleInfoModal(false)}
+                                >
+                                    <Image
+                                        source={ICON_PLAYER_CLOSE_INFO.module}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+
+                        </View>
+                        <View
+                            style={{
+                                width: '100%',
+                                borderBottomColor: '#373943',
+                                borderBottomWidth: 1
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width: '100%',
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-start',
+                                    justifyContent: 'space-between',
+                                    paddingTop: 20,
+                                    paddingLeft: 20,
+                                    paddingRight: 20,
+                                    paddingBottom: 20,
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: 17,
+                                        marginBottom: 10
+                                    }}
+                                >
+                                    Stranger Things
+                                </Text>
+                                <View style={{flexDirection: 'row'}}>
+                                    <Text
+                                        style={{
+                                            color: '#A4AEB4',
+                                            fontSize: 14,
+                                            marginRight: 10
+                                        }}
+                                    >
+                                        Zaid Al-Hussaini
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: '#A4AEB4',
+                                            fontSize: 12,
+                                        }}
+                                    >410 Videos 66K. Followers</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View
+                            style={{
+                                width: '100%'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width: '100%',
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-start',
+                                    justifyContent: 'space-between',
+                                    paddingTop: 20,
+                                    paddingLeft: 20,
+                                    paddingRight: 20,
+                                    paddingBottom: 20,
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: 17,
+                                        marginBottom: 20
+                                    }}
+                                >
+                                    When a young boy vanishes, a small town uncovers a mystery involving secret
+                                    experiments, supernatural forces and one strange girl. When a young boy vanishes, a
+                                    small town uncovers a mystery involving secret experiments, terrifying supernatural
+                                    forces and one strange little girl.When a boy vanishes, a small town uncovers a
+                                    mystery involving secret experiments, terrifying supernatural forces and one strange
+                                    little girl.
+                                </Text>
+                                <Text
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: 17,
+                                        marginBottom: 10
+                                    }}
+                                >
+                                    Starring: Winona Ryder, David Harbour, Finn Wolfhard
+                                    Creators: The Duffer Brothers
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                </ModalWrapper>
+                <KeyboardAvoidingView
+                    style={styles.container}
+                    behavior="padding"
+                    enabled
+                >
+                    <View
+                        style={[
+                            styles.container,
+                            {
+                                paddingTop: fullScreenTrigger || changeModalTrigger ? 0 : 40,
+                            }
+                        ]}
+                    >
+                        <View style={[styles.rootView]}>
+                            <TouchableOpacity
                                 style={
-                                    !fullScreenTrigger
+                                    fullScreenTrigger
                                         ? !changeModalTrigger
-                                        ? [styles.video,
-                                            {
-                                                opacity: this.state.showVideo ? 1.0 : 0.0,
-                                                width: windowWidth,
-                                                height: VIDEO_CONTAINER_HEIGHT
-                                            }
-                                        ]
+                                        ? {
+                                            width: '100%',
+                                            // height: '100%',
+                                        }
                                         : {
                                             width: windowWidth / 2.5,
                                             height: windowHeight / 10,
                                         }
-                                        : [StyleSheet.absoluteFill, {height: '100%'}]
+                                        : null
                                 }
-                                resizeMode='cover'
-                                onPlaybackStatusUpdate={this._onPlaybackStatusUpdate}
-                                onLoadStart={this._onLoadStart}
-                                onLoad={this._onLoad}
-                                onError={this._onError}
-                                // onFullscreenUpdate={this._onFullscreenUpdate}
-                                onReadyForDisplay={this._onReadyForDisplay}
-                                useNativeControls={this.state.useNativeControls}
-                            />
-                        </TouchableOpacity>
-                        <View
-                            style={[
-                                styles.mediaControllerContainer,
-                                !changeModalTrigger
-                                    ? {
-                                        display: this.state.controllerNone ? 'none' : 'flex',
-                                        opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
-                                        width: '100%',
-                                        height: fullScreenTrigger ? '100%' : VIDEO_CONTAINER_HEIGHT,
-                                        paddingTop: fullScreenTrigger ? 20 : 0,
-                                        paddingBottom: fullScreenTrigger ? 40 : 0,
-                                        paddingLeft: fullScreenTrigger ? 50 : 0,
-                                        paddingRight: fullScreenTrigger ? 50 : 0,
-                                        justifyContent: this.state.maxSeek === 0 ? 'space-between' : 'flex-end',
-                                        alignItems: 'flex-end',
+                                onPress={() => this.handleShowController()}
+                            >
+                                <Video
+                                    ref={this._mountVideo}
+                                    style={
+                                        !fullScreenTrigger
+                                            ? !changeModalTrigger
+                                            ? [styles.video,
+                                                {
+                                                    opacity: this.state.showVideo ? 1.0 : 0.0,
+                                                    width: windowWidth,
+                                                    height: VIDEO_CONTAINER_HEIGHT
+                                                }
+                                            ]
+                                            : {
+                                                width: windowWidth / 2.5,
+                                                height: windowHeight / 10,
+                                            }
+                                            : [StyleSheet.absoluteFill, {height: '100%'}]
                                     }
-                                    : {display: 'none'}
-                            ]}
-                        >
-                            {
-                                this.state.maxSeek === 0
-                                    ? (
-                                        <>
-                                            <View style={styles.mediaControllerContainerTop}>
-                                                {
-                                                    fullScreenTrigger
-                                                        ? (
-                                                            <Text
-                                                                style={{
-                                                                    color: '#fff'
-                                                                }}
-                                                            >
-                                                                {this.state.playbackInstanceName}
-                                                            </Text>
-                                                        )
-                                                        : (
-                                                            <TouchableOpacity
-                                                                style={styles.wrapper}
-                                                                onPress={changeModal}
-                                                                disabled={this.state.isLoading}
-                                                            >
-                                                                <Image style={styles.button} source={ICON_ARROW_DOWN.module}/>
-                                                            </TouchableOpacity>
-                                                        )
-                                                }
-                                                <TouchableOpacity
-                                                    style={[styles.wrapper, {
-                                                        justifyContent: 'flex-start',
-                                                        alignItems: 'flex-end',
-                                                        width: 50,
-                                                        height: 20,
-                                                        paddingTop: 5
-                                                    }]}
-                                                    onPress={openSubModal}
-                                                    disabled={this.state.isLoading}
-                                                >
-                                                    <Image style={styles.button} source={ICON_MENU_HORIZONTAL.module}/>
-                                                </TouchableOpacity>
-                                            </View>
-                                            <View style={styles.mediaControllerContainerMiddle}>
-                                                {
-                                                    !fullScreenTrigger
-                                                        ? (
-                                                            <TouchableOpacity
-                                                                style={styles.wrapper}
-                                                                onPress={this._onBackPressed}
-                                                                disabled={this.state.isLoading}
-                                                            >
-                                                                <Image style={styles.button} source={ICON_BACK_BUTTON.module}/>
-                                                            </TouchableOpacity>
-                                                        )
-                                                        : (
-                                                            <TouchableOpacity
-                                                                style={[styles.wrapper,
-                                                                    {
-                                                                        marginRight: windowWidth / 2
-                                                                    }
-                                                                ]}
-                                                                onPress={() => this.skip(false)}
-                                                                disabled={this.state.isLoading}
-                                                            >
-                                                                <Image style={styles.button}
-                                                                       source={ICON_CHANGE_SECOND_RIGHT.module}/>
-                                                            </TouchableOpacity>
-                                                        )
-                                                }
+                                    resizeMode='cover'
+                                    onPlaybackStatusUpdate={this._onPlaybackStatusUpdate}
+                                    onLoadStart={this._onLoadStart}
+                                    onLoad={this._onLoad}
+                                    onError={this._onError}
+                                    onReadyForDisplay={this._onReadyForDisplay}
+                                    useNativeControls={this.state.useNativeControls}
+                                />
+                            </TouchableOpacity>
+                            <View
+                                style={[
+                                    styles.mediaControllerContainer,
+                                    !changeModalTrigger
+                                        ? {
+                                            display: this.state.controllerNone ? 'none' : 'flex',
+                                            opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
+                                            width: '100%',
+                                            height: fullScreenTrigger ? '100%' : VIDEO_CONTAINER_HEIGHT,
+                                            paddingTop: fullScreenTrigger ? 20 : 0,
+                                            paddingBottom: fullScreenTrigger ? 40 : 0,
+                                            paddingLeft: fullScreenTrigger ? 50 : 0,
+                                            paddingRight: fullScreenTrigger ? 50 : 0,
+                                            justifyContent: this.state.maxSeek === 0 ? 'space-between' : 'flex-end',
+                                            alignItems: 'flex-end',
+                                        }
+                                        : {display: 'none'}
+                                ]}
+                            >
+                                {
+                                    this.state.maxSeek === 0
+                                        ? (
+                                            <>
+                                                <View style={styles.mediaControllerContainerTop}>
+                                                    {
+                                                        fullScreenTrigger
+                                                            ? (
+                                                                <Text
+                                                                    style={{
+                                                                        color: '#fff'
+                                                                    }}
+                                                                >
+                                                                    {this.state.playbackInstanceName}
+                                                                </Text>
+                                                            )
+                                                            : (
+                                                                <TouchableOpacity
+                                                                    style={styles.wrapper}
+                                                                    onPress={changeModal}
+                                                                    disabled={this.state.isLoading}
+                                                                >
+                                                                    <Image style={styles.button}
+                                                                           source={ICON_ARROW_DOWN.module}/>
+                                                                </TouchableOpacity>
+                                                            )
+                                                    }
+                                                    <TouchableOpacity
+                                                        style={[styles.wrapper, {
+                                                            justifyContent: 'flex-start',
+                                                            alignItems: 'flex-end',
+                                                            width: 50,
+                                                            height: 20,
+                                                            paddingTop: 5
+                                                        }]}
+                                                        onPress={openSubModal}
+                                                        disabled={this.state.isLoading}
+                                                    >
+                                                        <Image style={styles.button} source={ICON_MENU_HORIZONTAL.module}/>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View style={styles.mediaControllerContainerMiddle}>
+                                                    {
+                                                        !fullScreenTrigger
+                                                            ? (
+                                                                <TouchableOpacity
+                                                                    style={styles.wrapper}
+                                                                    onPress={this._onBackPressed}
+                                                                    disabled={this.state.isLoading}
+                                                                >
+                                                                    <Image style={styles.button}
+                                                                           source={ICON_BACK_BUTTON.module}/>
+                                                                </TouchableOpacity>
+                                                            )
+                                                            : (
+                                                                <TouchableOpacity
+                                                                    style={[styles.wrapper,
+                                                                        {
+                                                                            marginRight: windowWidth / 2
+                                                                        }
+                                                                    ]}
+                                                                    onPress={() => this.skip(false)}
+                                                                    disabled={this.state.isLoading}
+                                                                >
+                                                                    <Image style={styles.button}
+                                                                           source={ICON_CHANGE_SECOND_RIGHT.module}/>
+                                                                </TouchableOpacity>
+                                                            )
+                                                    }
 
+                                                    {
+                                                        this.state.isPlaying
+                                                            ? (
+                                                                <TouchableOpacity
+                                                                    style={styles.wrapper}
+                                                                    onPress={this.handlePauseButton}
+                                                                    disabled={this.state.isLoading}
+                                                                >
+                                                                    <Image
+                                                                        style={[styles.button]}
+                                                                        source={ICON_PAUSE_BUTTON.module}
+                                                                    />
+                                                                </TouchableOpacity>
+                                                            )
+                                                            : (
+                                                                <TouchableOpacity
+                                                                    style={styles.wrapper}
+                                                                    onPress={this.handlePlayButton}
+                                                                    disabled={this.state.isLoading}
+                                                                >
+                                                                    <Image
+                                                                        style={[styles.button]}
+                                                                        source={ICON_PLAY_BUTTON.module}
+                                                                    />
+                                                                </TouchableOpacity>
+                                                            )
+                                                    }
+                                                    {
+                                                        !fullScreenTrigger
+                                                            ? (
+                                                                <TouchableOpacity
+                                                                    style={styles.wrapper}
+                                                                    onPress={this._onForwardPressed}
+                                                                    disabled={this.state.isLoading}
+                                                                >
+                                                                    <Image style={styles.button}
+                                                                           source={ICON_FORWARD_BUTTON.module}/>
+                                                                </TouchableOpacity>
+                                                            )
+                                                            : (
+                                                                <TouchableOpacity
+                                                                    style={[styles.wrapper,
+                                                                        {
+                                                                            marginLeft: windowWidth / 2
+                                                                        }
+                                                                    ]}
+                                                                    onPress={() => this.skip(true)}
+                                                                    disabled={this.state.isLoading}
+                                                                >
+                                                                    <Image style={styles.button}
+                                                                           source={ICON_CHANGE_SECOND_LEFT.module}/>
+                                                                </TouchableOpacity>
+                                                            )
+                                                    }
+
+                                                </View>
+                                            </>
+                                        )
+                                        : null
+                                }
+
+                                <View style={styles.mediaControllerContainerBottom}>
+                                    <View
+                                        style={[
+                                            styles.playbackContainer,
+                                            {opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0}
+                                        ]}
+                                    >
+                                        <View style={styles.timestampRow}>
+                                            {
+                                                this.state.maxSeek === 0
+                                                    ? (
+                                                        <>
+                                                            <Text
+                                                                style={[
+                                                                    styles.text,
+                                                                    styles.timestamp,
+                                                                ]}
+                                                            >
+                                                                {this._getTimestamp()}
+                                                            </Text>
+                                                            <TouchableOpacity onPress={() => this._onFullscreenPressed()}>
+                                                                <Image
+                                                                    style={[
+                                                                        styles.button, {
+                                                                            marginLeft: 20,
+                                                                            marginRight: 20
+                                                                        }
+                                                                    ]}
+                                                                    source={ICON_FULLSCREEN.module}
+                                                                />
+                                                            </TouchableOpacity>
+                                                        </>
+                                                    )
+                                                    : null
+                                            }
+                                        </View>
+                                        {
+                                            this.state.maxSeek !== 0
+                                                ? (
+                                                    <View
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: -70,
+                                                            left: left - 20,
+                                                            flexDirection: 'column',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                        }}
+                                                    >
+                                                        <Image source={{uri: this.state.image}}
+                                                               style={{width: 100, height: 55}}/>
+                                                        <Text style={{color: '#fff'}}>
+                                                            {this._getTimestamp2()}
+                                                        </Text>
+                                                    </View>
+                                                )
+                                                : null
+                                        }
+                                        <Slider
+                                            style={styles.playbackSlider}
+                                            thumbImage={ICON_THUMB.module}
+                                            minimumTrackTintColor={'#244EFF'}
+                                            maximumTrackTintColor={'#37426E'}
+                                            value={this._getSeekSliderPosition()}
+                                            onValueChange={this._onSeekSliderValueChange}
+                                            onSlidingComplete={this._onSeekSliderSlidingComplete}
+                                            disabled={this.state.isLoading}
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                            {
+                                changeModalTrigger
+                                    ? (
+                                        <View
+                                            style={{
+                                                width: '60%',
+                                                height: windowHeight / 10,
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                backgroundColor: '#0A0A26',
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: '60%',
+                                                    height: '100%',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <Text style={{color: '#fff'}}>
+                                                    {this.state.playbackInstanceName}
+                                                </Text>
+                                            </View>
+                                            <View
+                                                style={{
+                                                    width: '20%',
+                                                    height: '100%',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
                                                 {
                                                     this.state.isPlaying
                                                         ? (
@@ -735,7 +1106,7 @@ export default class VideoPlayer extends Component {
                                                             >
                                                                 <Image
                                                                     style={[styles.button]}
-                                                                    source={ICON_PAUSE_BUTTON.module}
+                                                                    source={ICON_PLAYER_PAUSE_MINI.module}
                                                                 />
                                                             </TouchableOpacity>
                                                         )
@@ -747,468 +1118,314 @@ export default class VideoPlayer extends Component {
                                                             >
                                                                 <Image
                                                                     style={[styles.button]}
-                                                                    source={ICON_PLAY_BUTTON.module}
+                                                                    source={ICON_PLAYER_PLAY_MINI.module}
                                                                 />
                                                             </TouchableOpacity>
                                                         )
                                                 }
+                                            </View>
+                                            <TouchableOpacity
+                                                onPress={() => closeModal()}
+                                                style={{
+                                                    width: '20%',
+                                                    height: '100%',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <Image
+                                                    style={[styles.button]}
+                                                    source={ICON_PLAYER_CLOSE_MINI.module}
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                    : null
+                            }
+                        </View>
+                        {
+                            !changeFullScreen && !changeModalTrigger
+                                ? (
+                                    <View
+                                        style={{
+                                            flex: 3,
+                                            width: windowWidth,
+                                        }}
+                                    >
+                                        <ScrollView
+                                            style={{
+                                                flex: 1
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: windowWidth,
+                                                    height: 60,
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'space-around',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <TouchableOpacity
+                                                    onPress={() => this.handleLike()}
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        paddingHorizontal: 15,
+                                                        paddingVertical: 3,
+                                                        borderRightColor: '#797C89',
+                                                        borderRightWidth: .5,
+                                                        borderRightStyle: 'solid'
+                                                    }}
+                                                >
+                                                    <Image
+                                                        source={
+                                                            !this.state.likeActive
+                                                                ? ICON_LIKE.module : ICON_LIKE_ACTIVE.module
+                                                        }
+                                                    />
+                                                    <Text
+                                                        style={{
+                                                            fontSize: 15,
+                                                            color: !this.state.likeActive ? '#797C89' : '#2457FF',
+                                                            marginLeft: 3
+                                                        }}
+                                                    >
+                                                        Like
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        paddingHorizontal: 15,
+                                                        paddingVertical: 3,
+                                                        borderRightColor: '#797C89',
+                                                        borderRightWidth: .5,
+                                                        borderRightStyle: 'solid'
+                                                    }}
+                                                    onPress={() => this.onShare()}
+                                                >
+                                                    <Image source={ICON_SHARE.module}/>
+                                                    <Text
+                                                        style={{fontSize: 15, color: '#797C89', marginLeft: 3}}>Share</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        paddingHorizontal: 15,
+                                                        paddingVertical: 3,
+                                                        borderRightColor: '#797C89',
+                                                        borderRightWidth: .5,
+                                                        borderRightStyle: 'solid'
+                                                    }}
+                                                >
+                                                    <Image source={ICON_WATCH.module}/>
+                                                    <Text style={{fontSize: 15, color: '#797C89', marginLeft: 3}}>Watch
+                                                        Later</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        paddingHorizontal: 15,
+                                                        paddingVertical: 3,
+                                                    }}
+                                                    onPress={() => this.handleInfoModal(true)}
+                                                >
+                                                    <Image source={ICON_INFO.module}/>
+                                                    <Text
+                                                        style={{fontSize: 15, color: '#797C89', marginLeft: 3}}>Info</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                            <View
+                                                style={{
+                                                    width: windowWidth,
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'flex-start',
+                                                    alignItems: 'flex-start',
+                                                    paddingLeft: 10,
+                                                    paddingRight: 10,
+                                                    marginBottom: 30
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{fontSize: 17, color: '#fff'}}
+                                                >
+                                                    Stranger Things
+                                                </Text>
+                                                <Text
+                                                    style={{fontSize: 13, color: '#fff'}}
+                                                >
+                                                    When a young boy vanishes, a small town uncovers a mystery involving
+                                                    secret experiments, terrifying supernatural forces and one strange
+                                                    little girl.
+                                                </Text>
+                                            </View>
+                                            <View
+                                                style={{
+                                                    width: windowWidth,
+                                                    height: 60,
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    borderTopWidth: 1,
+                                                    borderBottomWidth: 1,
+                                                    borderColor: '#797C89'
+                                                }}
+                                            >
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        paddingLeft: 10,
+                                                        paddingRight: 10,
+                                                    }}
+                                                >
+                                                    <Image source={ICON_USER.module}/>
+                                                    <View
+                                                        style={{
+                                                            flexDirection: 'column',
+                                                            alignItems: 'flex-start',
+                                                            justifyContent: 'space-between',
+                                                            marginLeft: 10,
+                                                        }}
+                                                    >
+                                                        <View
+                                                            style={{
+                                                                flexDirection: 'row',
+                                                                alignItems: 'flex-start',
+                                                                justifyContent: 'flex-start',
+                                                            }}
+                                                        >
+                                                            <Text style={{fontSize: 14, color: '#fff'}}>
+                                                                Zaid AI-Hussair
+                                                            </Text>
+
+                                                            <View
+                                                                style={{
+                                                                    height: 17,
+                                                                    justifyContent: 'center',
+                                                                    alignItems: 'center'
+                                                                }}
+                                                            >
+                                                                <LinearGradient
+                                                                    colors={['#2727F5', '#001671']}
+                                                                    style={{
+                                                                        flex: 1,
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                        borderRadius: 10,
+                                                                        padding: 4
+                                                                    }}
+                                                                    start={{x: 0, y: 0}}
+                                                                    end={{x: 1, y: 0}}
+                                                                >
+                                                                    <Text
+                                                                        style={{
+                                                                            fontSize: 8,
+                                                                            color: '#fff',
+                                                                        }}
+                                                                    >
+                                                                        CONTRIBUTOR
+                                                                    </Text>
+                                                                </LinearGradient>
+                                                            </View>
+                                                        </View>
+                                                        <View
+                                                            style={{
+                                                                flexDirection: 'row',
+                                                                alignItems: 'flex-start',
+                                                                justifyContent: 'flex-start',
+                                                            }}
+                                                        >
+                                                            <Text
+                                                                style={{color: '#A4AEB4', fontSize: 12}}
+                                                            >
+                                                                410 Videos. 66K Followers
+                                                            </Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
                                                 {
-                                                    !fullScreenTrigger
+                                                    changeFollow
                                                         ? (
                                                             <TouchableOpacity
-                                                                style={styles.wrapper}
-                                                                onPress={this._onForwardPressed}
-                                                                disabled={this.state.isLoading}
+                                                                style={{
+                                                                    width: 80,
+                                                                    height: 28,
+                                                                }}
+                                                                onPress={() => handleChangeFollow()}
                                                             >
-                                                                <Image style={styles.button}
-                                                                       source={ICON_FORWARD_BUTTON.module}/>
+                                                                <LinearGradient
+                                                                    colors={['#2727F5', '#001671']}
+                                                                    style={{
+                                                                        flex: 1,
+                                                                        flexDirection: 'row',
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                        borderRadius: 15,
+                                                                        padding: 4
+                                                                    }}
+                                                                    start={{x: 0, y: 0}}
+                                                                    end={{x: 1, y: 0}}
+                                                                >
+                                                                    <Image source={ICON_PLUS.module}/>
+                                                                    <Text
+                                                                        style={{
+                                                                            fontSize: 13,
+                                                                            color: '#fff',
+                                                                            marginLeft: 5
+                                                                        }}
+                                                                    >
+                                                                        Follow
+                                                                    </Text>
+                                                                </LinearGradient>
                                                             </TouchableOpacity>
                                                         )
                                                         : (
                                                             <TouchableOpacity
-                                                                style={[styles.wrapper,
-                                                                    {
-                                                                        marginLeft: windowWidth / 2
-                                                                    }
-                                                                ]}
-                                                                onPress={() => this.skip(true)}
-                                                                disabled={this.state.isLoading}
+                                                                style={{
+                                                                    flexDirection: 'row',
+                                                                    justifyContent: 'center',
+                                                                    alignItems: 'center',
+                                                                    width: 85,
+                                                                    height: 28,
+                                                                    borderRadius: 15,
+                                                                    borderStyle: 'solid',
+                                                                    borderWidth: 1,
+                                                                    borderColor: '#797C89'
+                                                                }}
+                                                                onPress={() => handleChangeFollow()}
                                                             >
-                                                                <Image style={styles.button}
-                                                                       source={ICON_CHANGE_SECOND_LEFT.module}/>
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 13,
+                                                                        color: '#A4AEB4',
+                                                                        marginRight: 5
+                                                                    }}
+                                                                >
+                                                                    Following
+                                                                </Text>
+                                                                <Image source={ICON_ARROW_DOWN_FOLLOW.module}/>
                                                             </TouchableOpacity>
                                                         )
                                                 }
-
                                             </View>
-                                        </>
-                                    )
-                                    : null
-                            }
+                                            <VideoTabs handleAutoPlay={() => this.handleAutoPlay()}
+                                                       autoPlay={this.state.autoPlay}/>
+                                        </ScrollView>
 
-                            <View style={styles.mediaControllerContainerBottom}>
-                                <View
-                                    style={[
-                                        styles.playbackContainer,
-                                        {opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0}
-                                    ]}
-                                >
-                                    <View style={styles.timestampRow}>
-                                        {
-                                            this.state.maxSeek === 0
-                                                ? (
-                                                    <>
-                                                        <Text
-                                                            style={[
-                                                                styles.text,
-                                                                styles.timestamp,
-                                                            ]}
-                                                        >
-                                                            {this._getTimestamp()}
-                                                        </Text>
-                                                        <TouchableOpacity onPress={() => this._onFullscreenPressed()}>
-                                                            <Image
-                                                                style={[
-                                                                    styles.button, {
-                                                                        marginLeft: 20,
-                                                                        marginRight: 20
-                                                                    }
-                                                                ]}
-                                                                source={ICON_FULLSCREEN.module}
-                                                            />
-                                                        </TouchableOpacity>
-                                                    </>
-                                                )
-                                                : null
-                                        }
-                                    </View>
-                                    {
-                                        this.state.maxSeek !== 0
-                                            ? (
-                                                <View
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: -70,
-                                                        left: left - 20,
-                                                        flexDirection: 'column',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        borderWidth: 1,
-                                                        borderColor: 'red',
-                                                        borderStyle: 'solid'
-                                                    }}
-                                                >
-                                                    <Image source={{uri: this.state.image}}
-                                                           style={{width: 100, height: 55}}/>
-                                                    <Text style={{color: '#fff'}}>
-                                                        {this._getTimestamp2()}
-                                                    </Text>
-                                                </View>
-                                            )
-                                            : null
-                                    }
-                                    <Slider
-                                        style={styles.playbackSlider}
-                                        thumbImage={ICON_THUMB.module}
-                                        minimumTrackTintColor={'#244EFF'}
-                                        maximumTrackTintColor={'#37426E'}
-                                        value={this._getSeekSliderPosition()}
-                                        onValueChange={this._onSeekSliderValueChange}
-                                        onSlidingComplete={this._onSeekSliderSlidingComplete}
-                                        disabled={this.state.isLoading}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                        {
-                            changeModalTrigger
-                                ? (
-                                    <View
-                                        style={{
-                                            width: '60%',
-                                            height: windowHeight / 10,
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            backgroundColor: 'blue',
-                                        }}
-                                    >
-                                        <View
-                                            style={{
-                                                width: '60%',
-                                                height: '100%',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <Text style={{color: '#fff'}}>
-                                                {this.state.playbackInstanceName}
-                                            </Text>
-                                        </View>
-                                        <View
-                                            style={{
-                                                width: '20%',
-                                                height: '100%',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            {
-                                                this.state.isPlaying
-                                                    ? (
-                                                        <TouchableOpacity
-                                                            style={styles.wrapper}
-                                                            onPress={this.handlePauseButton}
-                                                            disabled={this.state.isLoading}
-                                                        >
-                                                            <Image
-                                                                style={[styles.button]}
-                                                                source={ICON_PAUSE_BUTTON.module}
-                                                            />
-                                                        </TouchableOpacity>
-                                                    )
-                                                    : (
-                                                        <TouchableOpacity
-                                                            style={styles.wrapper}
-                                                            onPress={this.handlePlayButton}
-                                                            disabled={this.state.isLoading}
-                                                        >
-                                                            <Image
-                                                                style={[styles.button]}
-                                                                source={ICON_PLAY_BUTTON.module}
-                                                            />
-                                                        </TouchableOpacity>
-                                                    )
-                                            }
-                                        </View>
-                                        <TouchableOpacity
-                                            onPress={() => closeModal()}
-                                            style={{
-                                                width: '20%',
-                                                height: '100%',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <AntDesign name="close" size={24} color="black"/>
-                                        </TouchableOpacity>
                                     </View>
                                 )
                                 : null
                         }
                     </View>
-                    {
-                        !changeFullScreen && !changeModalTrigger
-                            ? (
-                                <View
-                                    style={{
-                                        flex: 3,
-                                        width: windowWidth,
-                                    }}
-                                >
-                                    <ScrollView
-                                        style={{
-                                            flex: 1
-                                        }}
-                                    >
-                                        <View
-                                            style={{
-                                                width: windowWidth,
-                                                height: 60,
-                                                flexDirection: 'row',
-                                                justifyContent: 'space-around',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <TouchableOpacity
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    paddingHorizontal: 15,
-                                                    paddingVertical: 3,
-                                                    borderRightColor: '#797C89',
-                                                    borderRightWidth: .5,
-                                                    borderRightStyle: 'solid'
-                                                }}
-                                            >
-                                                <Image source={ICON_LIKE.module}/>
-                                                <Text
-                                                    style={{fontSize: 15, color: '#797C89', marginLeft: 3}}>Like</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    paddingHorizontal: 15,
-                                                    paddingVertical: 3,
-                                                    borderRightColor: '#797C89',
-                                                    borderRightWidth: .5,
-                                                    borderRightStyle: 'solid'
-                                                }}
-                                            >
-                                                <Image source={ICON_SHARE.module}/>
-                                                <Text
-                                                    style={{fontSize: 15, color: '#797C89', marginLeft: 3}}>Share</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    paddingHorizontal: 15,
-                                                    paddingVertical: 3,
-                                                    borderRightColor: '#797C89',
-                                                    borderRightWidth: .5,
-                                                    borderRightStyle: 'solid'
-                                                }}
-                                            >
-                                                <Image source={ICON_WATCH.module}/>
-                                                <Text style={{fontSize: 15, color: '#797C89', marginLeft: 3}}>Watch
-                                                    Later</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    paddingHorizontal: 15,
-                                                    paddingVertical: 3,
-                                                }}
-                                            >
-                                                <Image source={ICON_INFO.module}/>
-                                                <Text
-                                                    style={{fontSize: 15, color: '#797C89', marginLeft: 3}}>Info</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View
-                                            style={{
-                                                width: windowWidth,
-                                                flexDirection: 'column',
-                                                justifyContent: 'flex-start',
-                                                alignItems: 'flex-start',
-                                                paddingLeft: 10,
-                                                paddingRight: 10,
-                                                marginBottom: 30
-                                            }}
-                                        >
-                                            <Text
-                                                style={{fontSize: 17, color: '#fff'}}
-                                            >
-                                                Stranger Things
-                                            </Text>
-                                            <Text
-                                                style={{fontSize: 13, color: '#fff'}}
-                                            >
-                                                When a young boy vanishes, a small town uncovers a mystery involving
-                                                secret experiments, terrifying supernatural forces and one strange
-                                                little girl.
-                                            </Text>
-                                        </View>
-                                        <View
-                                            style={{
-                                                width: windowWidth,
-                                                height: 60,
-                                                flexDirection: 'row',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                borderTopWidth: 1,
-                                                borderBottomWidth: 1,
-                                                borderColor: '#797C89'
-                                            }}
-                                        >
-                                            <View
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    paddingLeft: 10,
-                                                    paddingRight: 10,
-                                                }}
-                                            >
-                                                <Image source={ICON_USER.module}/>
-                                                <View
-                                                    style={{
-                                                        flexDirection: 'column',
-                                                        alignItems: 'flex-start',
-                                                        justifyContent: 'space-between',
-                                                        marginLeft: 10,
-                                                    }}
-                                                >
-                                                    <View
-                                                        style={{
-                                                            flexDirection: 'row',
-                                                            alignItems: 'flex-start',
-                                                            justifyContent: 'flex-start',
-                                                        }}
-                                                    >
-                                                        <Text style={{fontSize: 14, color: '#fff'}}>
-                                                            Zaid AI-Hussair
-                                                        </Text>
-
-                                                        <View
-                                                            style={{
-                                                                height: 17,
-                                                                justifyContent: 'center',
-                                                                alignItems: 'center'
-                                                            }}
-                                                        >
-                                                            <LinearGradient
-                                                                colors={['#2727F5', '#001671']}
-                                                                style={{
-                                                                    flex: 1,
-                                                                    justifyContent: 'center',
-                                                                    alignItems: 'center',
-                                                                    borderRadius: 10,
-                                                                    padding: 4
-                                                                }}
-                                                                start={{x: 0, y: 0}}
-                                                                end={{x: 1, y: 0}}
-                                                            >
-                                                                <Text
-                                                                    style={{
-                                                                        fontSize: 8,
-                                                                        color: '#fff',
-                                                                    }}
-                                                                >
-                                                                    CONTRIBUTOR
-                                                                </Text>
-                                                            </LinearGradient>
-                                                        </View>
-                                                    </View>
-                                                    <View
-                                                        style={{
-                                                            flexDirection: 'row',
-                                                            alignItems: 'flex-start',
-                                                            justifyContent: 'flex-start',
-                                                        }}
-                                                    >
-                                                        <Text
-                                                            style={{color: '#A4AEB4', fontSize: 12}}
-                                                        >
-                                                            410 Videos. 66K Followers
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                            {
-                                                changeFollow
-                                                    ? (
-                                                        <TouchableOpacity
-                                                            style={{
-                                                                width: 80,
-                                                                height: 28,
-                                                            }}
-                                                            onPress={() => handleChangeFollow()}
-                                                        >
-                                                            <LinearGradient
-                                                                colors={['#2727F5', '#001671']}
-                                                                style={{
-                                                                    flex: 1,
-                                                                    flexDirection: 'row',
-                                                                    justifyContent: 'center',
-                                                                    alignItems: 'center',
-                                                                    borderRadius: 15,
-                                                                    padding: 4
-                                                                }}
-                                                                start={{x: 0, y: 0}}
-                                                                end={{x: 1, y: 0}}
-                                                            >
-                                                                <Image source={ICON_PLUS.module}/>
-                                                                <Text
-                                                                    style={{
-                                                                        fontSize: 13,
-                                                                        color: '#fff',
-                                                                        marginLeft: 5
-                                                                    }}
-                                                                >
-                                                                    Follow
-                                                                </Text>
-                                                            </LinearGradient>
-                                                        </TouchableOpacity>
-                                                    )
-                                                    : (
-                                                        <TouchableOpacity
-                                                            style={{
-                                                                flexDirection: 'row',
-                                                                justifyContent: 'center',
-                                                                alignItems: 'center',
-                                                                width: 85,
-                                                                height: 28,
-                                                                borderRadius: 15,
-                                                                borderStyle: 'solid',
-                                                                borderWidth: 1,
-                                                                borderColor: '#797C89'
-                                                            }}
-                                                            onPress={() => handleChangeFollow()}
-                                                        >
-                                                            <Text
-                                                                style={{
-                                                                    fontSize: 13,
-                                                                    color: '#A4AEB4',
-                                                                    marginRight: 5
-                                                                }}
-                                                            >
-                                                                Following
-                                                            </Text>
-                                                            <Image source={ICON_ARROW_DOWN_FOLLOW.module}/>
-                                                        </TouchableOpacity>
-                                                    )
-                                            }
-                                        </View>
-                                        <View
-                                            style={{
-                                                height: '100%'
-                                            }}
-                                        >
-                                            {/*<VideoTabs/>*/}
-                                        </View>
-                                    </ScrollView>
-
-                                </View>
-                            )
-                            : null
-                    }
-                </View>
+                </KeyboardAvoidingView>
             </>
         )
     }

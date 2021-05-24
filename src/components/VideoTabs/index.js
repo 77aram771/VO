@@ -1,55 +1,177 @@
-import React from 'react';
-import { Constants } from 'expo';
-import { View, StatusBar, StyleSheet } from 'react-native'
-import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view'
+import React, {useState} from 'react'
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Switch,
+    Image,
+    TextInput,
+    KeyboardAvoidingView,
+    Button
+} from 'react-native'
+import {CommentData, ICON_USER2, tabsData, videoPlayerUpNextData} from "../../shared/MockData"
+import {PreviewVideo} from "./component/PreviewVideo"
+import {CommentVideo} from "./component/CommentVideo"
+import {style} from './style'
 
-const FirstRoute = () => (
-    <View style={[styles.container, { backgroundColor: '#ff4081' }]} />
-);
-const SecondRoute = () => (
-    <View style={[styles.container, { backgroundColor: '#673ab7' }]} />
-);
 
-export default class VideoTabs extends React.Component {
-    state = {
-        index: 0,
-        routes: [{ key: '1', title: 'First' }, { key: '2', title: 'Second' }],
-    };
+export const VideoTabs = ({autoPlay, handleAutoPlay}) => {
 
-    _handleIndexChange = index => {
-        this.setState({index})
-    };
-
-    _renderHeader = props => <TabBar {...props} />;
-
-    _renderScene = SceneMap({
-        '1': FirstRoute,
-        '2': SecondRoute,
-    });
-
-    render() {
+    const Tab1 = () => {
         return (
             <View
-                style={{
-                    flex: 1,
-                    paddingTop: Constants.statusBarHeight,
-                    backgroundColor: '#1982f3',
-                }}>
-                <TabViewAnimated
-                    style={styles.container}
-                    navigationState={this.state}
-                    renderScene={this._renderScene}
-                    renderHeader={this._renderHeader}
-                    onRequestChangeTab={this._handleIndexChange}
-                />
-                <StatusBar barStyle="light-content" />
+                style={style.container}
+            >
+                <View
+                    style={style.tabBox}
+                >
+                    <View>
+                        <Text style={style.tabBoxTitle}>
+                            Related Videos
+                        </Text>
+                    </View>
+                    <View style={style.autoplayBox}>
+                        <Text style={style.tabBoxText}>
+                            Autoplay
+                        </Text>
+                        <Switch
+                            onValueChange={handleAutoPlay}
+                            value={autoPlay}
+                            thumbColor={'#fff'}
+                            trackColor={{false: '#98e7f0', true: '#244EFF'}}
+                            ios_backgroundColor={'#767577'}
+                        />
+                    </View>
+                </View>
+                <View style={{paddingLeft: 10, paddingRight: 10}}>
+                    {
+                        videoPlayerUpNextData.map(item => {
+                            return (
+                                <PreviewVideo
+                                    title={item.title}
+                                    userName={item.userName}
+                                    follow={item.followNumber}
+                                    text={item.text}
+                                    time={item.videoTime}
+                                    userIcon={item.userIcon}
+                                    videoImage={item.videoImage}
+                                />
+                            )
+                        })
+                    }
+                </View>
             </View>
-        );
+        )
     }
-}
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});
+    const Tab2 = () => {
+        return (
+            <View
+                style={style.container}
+            >
+                <View style={{
+                    width: '100%',
+                    paddingLeft: 10, paddingRight: 10}}>
+                    {
+                        CommentData.map(item => {
+                            return (
+                                <CommentVideo
+                                    userIcon={item.userIcon}
+                                    userName={item.userName}
+                                    commentArray={item.commentArray}
+                                    commentText={item.commentText}
+                                    date={item.date}
+                                    likeNumber={item.likeNumber}
+                                />
+                            )
+                        })
+                    }
+                </View>
+                {/*<View style={style.userCommentBox}>*/}
+                {/*    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'centers'}}>*/}
+                {/*        <Image source={ICON_USER2.module}/>*/}
+                {/*        <TextInput*/}
+                {/*            style={style.input}*/}
+                {/*            onChangeText={() => console.log('test')}*/}
+                {/*            // value={number}*/}
+                {/*            placeholder="Add Comment"*/}
+                {/*            keyboardType="twitter"*/}
+                {/*            placeholderTextColor={'#fff'}*/}
+                {/*        />*/}
+                {/*    </View>*/}
+                {/*    <View></View>*/}
+                {/*</View>*/}
+            </View>
+        )
+    }
+
+    const Tab3 = () => {
+        return (
+            <View
+                style={style.container}
+            >
+                <Text style={{color: '#fff'}}>
+                    3
+                </Text>
+            </View>
+        )
+    }
+
+    const [indexNum, setIndexNum] = useState(1)
+    const [data, setData] = useState(tabsData)
+
+    const handleTabs = (id) => {
+        setData(data.map(item => {
+            item.active = false
+            if (item.id === id) {
+                item.active = !item.active
+            }
+            return item
+        }))
+        setIndexNum(id)
+    }
+
+    return (
+        <View style={style.container}>
+            <View style={style.navigationContainer}>
+                <View style={style.navigationBox}>
+                    {
+                        tabsData.map(item => {
+                            return (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    style={[
+                                        style.navigationItem,
+                                        {
+                                            backgroundColor: item.active ? '#142C7C' : null
+                                        }
+                                    ]}
+                                    onPress={() => handleTabs(item.id)}
+                                >
+                                    <Text style={style.navigationItemText}>
+                                        {item.title}
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                </View>
+            </View>
+            {
+                indexNum === 1
+                    ? (
+                        <Tab1/>
+                    )
+                    : indexNum === 2
+                    ? (
+                        <Tab2/>
+                    )
+                    : indexNum === 3
+                        ? (
+                            <Tab3/>
+                        )
+                        : null
+            }
+        </View>
+    )
+}
