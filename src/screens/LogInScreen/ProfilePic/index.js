@@ -17,7 +17,7 @@ import Camera from "expo-camera/src/Camera";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn"
-import ImageCropper from 'react-native-simple-image-cropper';
+// import ImageCropper from 'react-native-simple-image-cropper';
 import {AsyncStorage} from 'react-native'
 import axios from "axios";
 
@@ -477,14 +477,14 @@ export const ProfilePic = ({navigation}) => {
                             <View
                                 style={style.container}
                             >
-                                <ImageCropper
-                                    imageUri={avatar}
-                                    cropAreaWidth={cropAreaWidth}
-                                    cropAreaHeight={cropAreaHeight}
-                                    containerColor="black"
-                                    areaColor="black"
-                                    setCropperParams={setCropperParams}
-                                  />
+                                {/*<ImageCropper*/}
+                                {/*    imageUri={avatar}*/}
+                                {/*    cropAreaWidth={cropAreaWidth}*/}
+                                {/*    cropAreaHeight={cropAreaHeight}*/}
+                                {/*    containerColor="black"*/}
+                                {/*    areaColor="black"*/}
+                                {/*    setCropperParams={setCropperParams}*/}
+                                {/*  />*/}
                                 <Image
                                     resizeMode="cover"
                                     style={{

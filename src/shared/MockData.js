@@ -407,6 +407,121 @@ export const videoPlayerUpNextData = [
     },
 ]
 
+export const videoPlayerEpisodesData = [
+    {
+        id: 1,
+        seasonNum: 1,
+        active: true,
+        episodes: [
+            {
+                id: 1,
+                title: 'Losing Alice',
+                text: 'Forty-eight-year-old film director Alice becomes obsessed with a 24-year-',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img1
+            },
+            {
+                id: 2,
+                title: 'California',
+                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img2
+            },
+            {
+                id: 3,
+                title: 'Stranger Things',
+                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img3
+            }
+        ]
+    },
+    {
+        id: 2,
+        seasonNum: 2,
+        active: false,
+        episodes: [
+            {
+                id: 1,
+                title: 'Losing Alice',
+                text: 'Forty-eight-year-old film director Alice becomes obsessed with a 24-year-',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img1
+            },
+            {
+                id: 2,
+                title: 'California',
+                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img2
+            },
+            {
+                id: 3,
+                title: 'Stranger Things',
+                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img3
+            }
+        ]
+    },
+    {
+        id: 3,
+        seasonNum: 3,
+        active: false,
+        episodes: [
+            {
+                id: 1,
+                title: 'Losing Alice',
+                text: 'Forty-eight-year-old film director Alice becomes obsessed with a 24-year-',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img1
+            },
+            {
+                id: 2,
+                title: 'California',
+                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img2
+            },
+            {
+                id: 3,
+                title: 'Stranger Things',
+                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img3
+            }
+        ]
+    },
+]
+
+
 export const CommentData = [
     {
         id: 1,

@@ -9,13 +9,17 @@ import {
     KeyboardAvoidingView,
     Button
 } from 'react-native'
-import {CommentData, ICON_USER2, tabsData, videoPlayerUpNextData} from "../../shared/MockData"
+import {CommentData, ICON_USER2, tabsData, videoPlayerEpisodesData, videoPlayerUpNextData} from "../../shared/MockData"
 import {PreviewVideo} from "./component/PreviewVideo"
 import {CommentVideo} from "./component/CommentVideo"
 import {style} from './style'
 
 
 export const VideoTabs = ({autoPlay, handleAutoPlay}) => {
+
+    const [indexNum, setIndexNum] = useState(1)
+    const [indexNum2, setIndexNum2] = useState(1)
+    const [data, setData] = useState(tabsData)
 
     const Tab1 = () => {
         return (
@@ -71,7 +75,8 @@ export const VideoTabs = ({autoPlay, handleAutoPlay}) => {
             >
                 <View style={{
                     width: '100%',
-                    paddingLeft: 10, paddingRight: 10}}>
+                    paddingLeft: 10, paddingRight: 10
+                }}>
                     {
                         CommentData.map(item => {
                             return (
@@ -110,15 +115,95 @@ export const VideoTabs = ({autoPlay, handleAutoPlay}) => {
             <View
                 style={style.container}
             >
-                <Text style={{color: '#fff'}}>
-                    3
-                </Text>
+                <View
+                    style={style.tabBox}
+                >
+                    {
+                        videoPlayerEpisodesData.map(item => {
+                            console.log('item', item)
+                            return (
+                                <TouchableOpacity
+                                    onPress={() => setIndexNum2(item.id)}
+                                    style={{
+                                        borderBottomWidth: 3,
+                                        borderBottomColor: '#2761FF'
+                                    }}
+                                >
+                                    <Text style={{color: item.active ? '#2761FF' : '#A4AEB4', fontSize: 11}}>
+                                        SEASON {item.seasonNum}
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+
+                </View>
+                {
+                    indexNum2 === 1
+                        ? (
+                            <View style={{paddingLeft: 10, paddingRight: 10}}>
+                                {
+                                    videoPlayerUpNextData.map(item => {
+                                        return (
+                                            <PreviewVideo
+                                                title={item.title}
+                                                userName={item.userName}
+                                                follow={item.followNumber}
+                                                text={item.text}
+                                                time={item.videoTime}
+                                                userIcon={item.userIcon}
+                                                videoImage={item.videoImage}
+                                            />
+                                        )
+                                    })
+                                }
+                            </View>
+                        )
+                        : indexNum2 === 2
+                        ? (
+                            <View style={{paddingLeft: 10, paddingRight: 10}}>
+                                {
+                                    videoPlayerUpNextData.map(item => {
+                                        return (
+                                            <PreviewVideo
+                                                title={item.title}
+                                                userName={item.userName}
+                                                follow={item.followNumber}
+                                                text={item.text}
+                                                time={item.videoTime}
+                                                userIcon={item.userIcon}
+                                                videoImage={item.videoImage}
+                                            />
+                                        )
+                                    })
+                                }
+                            </View>
+                        )
+                        : indexNum2 === 3
+                            ? (
+                                <View style={{paddingLeft: 10, paddingRight: 10}}>
+                                    {
+                                        videoPlayerUpNextData.map(item => {
+                                            return (
+                                                <PreviewVideo
+                                                    title={item.title}
+                                                    userName={item.userName}
+                                                    follow={item.followNumber}
+                                                    text={item.text}
+                                                    time={item.videoTime}
+                                                    userIcon={item.userIcon}
+                                                    videoImage={item.videoImage}
+                                                />
+                                            )
+                                        })
+                                    }
+                                </View>
+                            )
+                            : null
+                }
             </View>
         )
     }
-
-    const [indexNum, setIndexNum] = useState(1)
-    const [data, setData] = useState(tabsData)
 
     const handleTabs = (id) => {
         setData(data.map(item => {

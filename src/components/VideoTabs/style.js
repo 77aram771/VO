@@ -39,7 +39,7 @@ export const style = StyleSheet.create({
         paddingRight: 10,
         paddingLeft: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         alignItems: 'center'
     },
     tabBoxTitle: {

@@ -22,8 +22,6 @@ import {AsyncStorage} from 'react-native'
 
 const RootNavigation = () => {
 
-
-
     // const [isLoading, setIsLoading] = useState(false)
     const [logIn, setLogIn] = useState(false)
     const [user, setUser] = useState('')
