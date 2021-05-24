@@ -8,6 +8,7 @@ const initialState = {
 };
 
 const AuthReducer = (state = initialState, action) => {
+    // console.log('action-', action)
     switch (action.type) {
         case AUTH_ACTION_TYPES.API_PENDING:
             return {
@@ -15,7 +16,8 @@ const AuthReducer = (state = initialState, action) => {
                 loading: true,
             }
         case AUTH_ACTION_TYPES.API_SUCCESS:
-            const Token = action.payload.token
+            // console.log('action-', action)
+            const Token = action.data.data[0].accessToken
             AsyncStorage.setItem('Token', Token)
             return {
                 ...state,

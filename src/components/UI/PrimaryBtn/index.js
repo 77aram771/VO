@@ -4,13 +4,13 @@ import {LinearGradient} from 'expo-linear-gradient'
 import {windowHeight, windowWidth} from "../../../shared/Const"
 import {style} from './style'
 
-export const PrimaryBtn = ({text}) => {
-
-    const [passwordType, setPasswordType] = useState(true)
+export const PrimaryBtn = ({handlePress, text, disabled}) => {
 
     return (
         <TouchableOpacity
             style={style.primaryBtn}
+            onPress={() => handlePress()}
+            disabled={disabled}
         >
             <LinearGradient
                 colors={['#2727F5', '#001671']}
@@ -19,7 +19,7 @@ export const PrimaryBtn = ({text}) => {
                 style={{
                     position: 'absolute',
                     width: windowWidth,
-                    height: windowHeight / 18,
+                    height: (windowHeight * 7 ) / 100,
                 }}
             />
             <Text style={style.text}>{text}</Text>

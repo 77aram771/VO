@@ -11,8 +11,8 @@ export const style = StyleSheet.create({
         backgroundColor: 'blue',
         borderRadius: 100,
         overflow: 'hidden',
-        height: windowHeight / 18,
-        marginBottom: windowHeight / 30,
+        height: (windowHeight * 7 ) / 100,
+        marginBottom: (windowHeight * 2 ) / 100,
     },
     text: {
         fontSize: 20,

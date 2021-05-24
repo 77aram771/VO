@@ -24,6 +24,20 @@ export const style = StyleSheet.create({
         flex: 1,
         width: '100%',
     },
+    checkboxContainer: {
+        flexDirection: "row",
+        marginBottom: 0
+    },
+    checkbox: {
+        alignSelf: "center",
+        width: 18,
+        height: 18
+    },
+    label: {
+        margin: 8,
+        fontSize: 14,
+        color: '#a4aeb4'
+    },
     checkedImg: {
         marginLeft: 10,
         marginRight: 10,
@@ -54,8 +68,6 @@ export const style = StyleSheet.create({
         height: 'auto',
         fontSize: 18,
         color: 'white',
-        marginTop: 10,
-        marginBottom: 10,
     },
     input: {
         width: '100%',
@@ -64,8 +76,8 @@ export const style = StyleSheet.create({
         // borderColor: 'white',
         // color: 'white',
         fontSize: 16,
-        height: windowHeight / 20,
-        marginBottom: windowHeight / 50,
+        height: (windowHeight * 7 ) / 100,
+        marginBottom: (windowHeight * 2 ) / 100,
         color: '#A4AEB4',
         borderColor: 'rgba(164, 174, 180, 0.4)',
         borderBottomWidth: 1,
@@ -123,14 +135,6 @@ export const style = StyleSheet.create({
     greyText: {
         color: '#888888',
         fontSize: 20,
-    },
-
-    checkbox: {
-        position: 'relative',
-        width: 'auto',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
     },
     notChecked: {
         borderWidth: 2,
