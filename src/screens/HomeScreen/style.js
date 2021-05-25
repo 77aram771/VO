@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
         backgroundColor: '#000'
     },
     modalView: {
-        backgroundColor: 'white',
+        backgroundColor: '#000',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         // width: windowWidth,

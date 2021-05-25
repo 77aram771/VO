@@ -21,7 +21,7 @@ export const PreviewVideo = ({time, title, text, userName, follow, videoImage, u
                     {text}
                 </Text>
                 <View style={style.userBox}>
-                    <Image source={userIcon.module} style={{width: 20, height: 20}}/>
+                    <Image source={userIcon.module} style={{width: 20, height: 20, marginRight: 10}}/>
                     <Text style={{color: '#A4AEB4', fontSize: 12}}>{userName}.</Text>
                     <Text style={{color: '#A4AEB4', fontSize: 12}}>{follow}K Viewers</Text>
                 </View>

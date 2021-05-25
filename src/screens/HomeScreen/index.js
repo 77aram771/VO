@@ -1,21 +1,14 @@
-import React, {useState, useContext} from "react"
-import {View, Text, ScrollView, TouchableOpacity, Image} from "react-native"
+import React, {useState} from "react"
+import {View, Text, ScrollView, TouchableOpacity} from "react-native"
 import GestureRecognizer from 'react-native-swipe-gestures'
 import ModalWrapper from "react-native-modal-wrapper"
-import {videoSubModalObject} from "../../shared/MockData"
-import Context from "../../../Context"
+import {config, videoSubModalObject} from "../../shared/MockData"
 import VideoPlayer from "../../components/VideoPlayer"
 import {styles} from "./style"
 import {windowHeight} from "../../shared/Const"
 
-const config = {
-    velocityThreshold: 0.3,
-    directionalOffsetThreshold: 80
-}
-
 export function HomeScreen({navigation}) {
 
-    const {fullScreen} = useContext(Context)
     const [changeFullScreen, setChangeFullScreen] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const [subModalData, setSubModalData] = useState(videoSubModalObject)
@@ -25,12 +18,12 @@ export function HomeScreen({navigation}) {
     const [sectionId, setSectionId] = useState(null)
     const [changeFollow, setChangeFollow] = useState(null)
 
-    const onSwipeUp = (gestureState) => {
+    const onSwipeUp = () => {
         console.log('test UP')
         handleChangeModal()
     }
 
-    const onSwipeDown = (gestureState) => {
+    const onSwipeDown = () => {
         console.log('test DOWN')
         handleChangeModal()
     }
@@ -85,6 +78,7 @@ export function HomeScreen({navigation}) {
 
     const handleFullScreen = () => {
         setChangeFullScreen(!changeFullScreen)
+        console.log('changeFullScreen', changeFullScreen)
     }
 
     const handleChangeFollow = () => {
@@ -100,12 +94,6 @@ export function HomeScreen({navigation}) {
                 position='bottom'
                 shouldAnimateOnRequestClose={true}
                 showOverlay={false}
-                style={changeModal ? (() => {
-                    return {
-                        // position: 'relative',
-                        // top: 0,
-                    }
-                })() : {}}
                 visible={modalVisible}
             >
                 <GestureRecognizer
@@ -132,7 +120,6 @@ export function HomeScreen({navigation}) {
                                 styles.modalView,
                                 {
                                     height: changeModal ? windowHeight / 10 : '100%',
-                                    backgroundColor: '#000'
                                 }
                             ]}
                         >

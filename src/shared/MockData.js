@@ -5,6 +5,11 @@ import img1 from '../assets/img/img-video1.png'
 import img2 from '../assets/img/img-video2.png'
 import img3 from '../assets/img/img-video3.png'
 
+export const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 80
+}
+
 class Icon {
     constructor(module, width, height) {
         this.module = module;
@@ -423,8 +428,19 @@ export const videoPlayerEpisodesData = [
                 videoTime: '56:20',
                 videoImage: img1
             },
+
             {
                 id: 2,
+                title: 'Stranger Things',
+                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img3
+            },
+            {
+                id: 3,
                 title: 'California',
                 text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
                 userName: 'John Doe',
@@ -433,16 +449,6 @@ export const videoPlayerEpisodesData = [
                 videoTime: '56:20',
                 videoImage: img2
             },
-            {
-                id: 3,
-                title: 'Stranger Things',
-                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
-                userName: 'John Doe',
-                userIcon: ICON_USER2,
-                followNumber: 66,
-                videoTime: '56:20',
-                videoImage: img3
-            }
         ]
     },
     {
@@ -452,6 +458,16 @@ export const videoPlayerEpisodesData = [
         episodes: [
             {
                 id: 1,
+                title: 'Stranger Things',
+                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
+                userName: 'John Doe',
+                userIcon: ICON_USER2,
+                followNumber: 66,
+                videoTime: '56:20',
+                videoImage: img3
+            },
+            {
+                id: 2,
                 title: 'Losing Alice',
                 text: 'Forty-eight-year-old film director Alice becomes obsessed with a 24-year-',
                 userName: 'John Doe',
@@ -461,7 +477,7 @@ export const videoPlayerEpisodesData = [
                 videoImage: img1
             },
             {
-                id: 2,
+                id: 3,
                 title: 'California',
                 text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
                 userName: 'John Doe',
@@ -470,16 +486,7 @@ export const videoPlayerEpisodesData = [
                 videoTime: '56:20',
                 videoImage: img2
             },
-            {
-                id: 3,
-                title: 'Stranger Things',
-                text: 'When a young boy vanishes, a town uncovers a mystery involving secret…',
-                userName: 'John Doe',
-                userIcon: ICON_USER2,
-                followNumber: 66,
-                videoTime: '56:20',
-                videoImage: img3
-            }
+
         ]
     },
     {
@@ -521,7 +528,6 @@ export const videoPlayerEpisodesData = [
     },
 ]
 
-
 export const CommentData = [
     {
         id: 1,
@@ -530,6 +536,7 @@ export const CommentData = [
         likeNumber: 10,
         date: '2d',
         commentText: 'OMG',
+        showSubComment: false,
         commentArray: [
             {
                 id: 1,
@@ -538,7 +545,23 @@ export const CommentData = [
                 likeNumber: 10,
                 date: '1d',
                 commentText: 'OMG2',
-            }
+            },
+            {
+                id: 2,
+                userIcon: ICON_USER2,
+                userName: 'Lisa Blackasdasdasdasdasd',
+                likeNumber: 20,
+                date: '4d',
+                commentText: 'OMG2',
+            },
+            {
+                id: 3,
+                userIcon: ICON_USER2,
+                userName: 'Lisa Blackasdasdasdasdasd',
+                likeNumber: 20,
+                date: '4d',
+                commentText: 'OMG2',
+            },
         ]
     },
     {
@@ -548,6 +571,7 @@ export const CommentData = [
         likeNumber: 10,
         date: '2d',
         commentText: 'OMG',
+        showSubComment: false,
         commentArray: [
             {
                 id: 1,
@@ -566,6 +590,7 @@ export const CommentData = [
         likeNumber: 10,
         date: '2d',
         commentText: 'OMG',
+        showSubComment: false,
         commentArray: [
             {
                 id: 1,
@@ -584,6 +609,7 @@ export const CommentData = [
         likeNumber: 10,
         date: '2d',
         commentText: 'OMG',
+        showSubComment: false,
         commentArray: [
             {
                 id: 1,
