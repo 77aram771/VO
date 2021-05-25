@@ -54,19 +54,19 @@ export const styles = StyleSheet.create({
     },
     mediaControllerContainerBottom: {
         width: '100%',
-        height: 40,
+        // height: 40,
         // borderWidth: 1,
         // borderColor: 'red',
         // borderStyle: 'solid',
         zIndex: 0
     },
     playbackContainer: {
-        flex: 1,
+        // flex: 1,
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "center",
         alignSelf: "stretch",
-        height: 20
+        // height: 140,
     },
     playbackSlider: {
         position: 'relative',
@@ -193,4 +193,16 @@ export const styles = StyleSheet.create({
         // borderColor: 'red',
         marginLeft: 20,
     },
+    MainContainer: {
+        flex: 1,
+        width: windowWidth,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10
+    },
+
+    TextStyle :{
+        fontSize : 20,
+        color : '#000'
+    }
 })

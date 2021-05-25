@@ -112,8 +112,26 @@ export const ICON_CHECK = new Icon(
     13
 );
 
+export const ICON_RADIO = new Icon(
+    require("../assets/icon/icon-radio.png"),
+    17,
+    13
+);
+
+export const ICON_RADIO_CHECK = new Icon(
+    require("../assets/icon/icon-radio-check.png"),
+    17,
+    13
+);
+
 export const ICON_LIKE = new Icon(
     require("../assets/icon/icon-like.png"),
+    14,
+    13
+);
+
+export const ICON_LIKE_WHITE = new Icon(
+    require("../assets/icon/icon-like-white.png"),
     14,
     13
 );
@@ -130,8 +148,20 @@ export const ICON_SHARE = new Icon(
     13
 );
 
+export const ICON_SHARE_WHITE = new Icon(
+    require("../assets/icon/icon-share-white.png"),
+    16,
+    13
+);
+
 export const ICON_WATCH = new Icon(
     require("../assets/icon/icon-watch.png"),
+    17,
+    14
+);
+
+export const ICON_WATCH_WHITE = new Icon(
+    require("../assets/icon/icon-watch-white.png"),
     17,
     14
 );
@@ -141,6 +171,36 @@ export const ICON_INFO = new Icon(
     14,
     14
 );
+
+export const ICON_INFO_WHITE = new Icon(
+    require("../assets/icon/icon-info-white.png"),
+    14,
+    14
+);
+
+export const ICON_QUALITY_WHITE = new Icon(
+    require("../assets/icon/icon-quality-white.png"),
+    15,
+    14
+)
+
+export const ICON_CAPTIONS_WHITE = new Icon(
+    require("../assets/icon/icon-caption-white.png"),
+    15,
+    13
+)
+
+export const ICON_SOUND_WHITE = new Icon(
+    require("../assets/icon/icon-sound-white.png"),
+    16,
+    15
+)
+
+export const ICON_REPORT_WHITE = new Icon(
+    require("../assets/icon/icon-report-white.png"),
+    12,
+    14
+)
 
 export const ICON_USER = new Icon(
     require("../assets/icon/icon-user.png"),
@@ -274,7 +334,12 @@ export const videoSubModalObject = [
             require("../assets/icon/icon-quality.png"),
             16,
             15
-        )
+        ),
+        icon2: new Icon(
+            require("../assets/icon/icon-quality-white.png"),
+            16,
+            15
+        ),
     },
     {
         id: 2,
@@ -306,7 +371,12 @@ export const videoSubModalObject = [
             require("../assets/icon/icon-captions.png"),
             16,
             14
-        )
+        ),
+        icon2: new Icon(
+            require("../assets/icon/icon-caption-white.png"),
+            16,
+            14
+        ),
     },
     {
         id: 3,
@@ -328,11 +398,16 @@ export const videoSubModalObject = [
             require("../assets/icon/icon-sound.png"),
             18,
             15
-        )
+        ),
+        icon2: new Icon(
+            require("../assets/icon/icon-sound-white.png"),
+            18,
+            15
+        ),
     },
     {
         id: 4,
-        title: 'Report',
+        title: 'Report Video',
         items: [
             {
                 id: 1,
@@ -375,7 +450,12 @@ export const videoSubModalObject = [
             require("../assets/icon/icon-report.png"),
             13,
             15
-        )
+        ),
+        icon2: new Icon(
+            require("../assets/icon/icon-report-white.png"),
+            13,
+            15
+        ),
     }
 ]
 

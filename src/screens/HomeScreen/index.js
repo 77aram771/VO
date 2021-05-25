@@ -51,6 +51,8 @@ export function HomeScreen({navigation}) {
     const handleCloseSubModal = () => {
         setChangeSubModal(false)
         setSubModalVisible(!subModalVisible)
+        setSectionId(null)
+
     }
 
     const handleChangeSectionModal = (id) => {
@@ -74,6 +76,19 @@ export function HomeScreen({navigation}) {
         // setSubModalData(newObj)
         setSectionId(null)
         console.log('newObj', newObj)
+    }
+
+    const handleChangeSelectRadio = (id) => {
+        subModalData[sectionId].items.map(item => {
+            if (item.id === id) {
+                item.bool = !item.bool
+            }
+            // else {
+            //     item.bool = false
+            // }
+            return item
+        })
+        // setSectionId(null)
     }
 
     const handleFullScreen = () => {
@@ -128,9 +143,7 @@ export function HomeScreen({navigation}) {
                                 openSubModal={handleOpenSubModal}
                                 changeModal={handleChangeModal}
                                 changeFullScree={handleFullScreen}
-                                openModalTrigger={modalVisible}
                                 changeModalTrigger={changeModal}
-                                fullScreenTrigger={changeFullScreen}
                                 handleCloseSubModal={handleCloseSubModal}
                                 subModalVisible={subModalVisible}
                                 sectionId={sectionId}
@@ -141,6 +154,7 @@ export function HomeScreen({navigation}) {
                                 handleChangeSelect={handleChangeSelect}
                                 handleChangeSectionModal={handleChangeSectionModal}
                                 handleChangeFollow={handleChangeFollow}
+                                handleChangeSelectRadio={handleChangeSelectRadio}
                             />
                         </View>
                     </View>

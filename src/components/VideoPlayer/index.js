@@ -1,5 +1,16 @@
 import React, {Component} from "react"
-import {Image, Slider, Text, TouchableOpacity, View, StyleSheet, ScrollView, Share, TextInput} from "react-native"
+import {
+    Image,
+    Slider,
+    Text,
+    TouchableOpacity,
+    View,
+    StyleSheet,
+    ScrollView,
+    Share,
+    TextInput,
+    Dimensions
+} from "react-native"
 import {Audio, Video} from "expo-av"
 import {windowHeight, windowWidth} from "../../shared/Const"
 import {
@@ -31,7 +42,14 @@ import {
     ICON_PLAYER_PAUSE_MINI,
     ICON_PLAYER_CLOSE_MINI,
     ICON_PLAYER_CLOSE_INFO,
-    ICON_PLAYER_PLAY_MINI, ICON_USER2
+    ICON_PLAYER_PLAY_MINI,
+    ICON_USER2,
+    ICON_RADIO,
+    ICON_RADIO_CHECK,
+    ICON_LIKE_WHITE,
+    ICON_SHARE_WHITE,
+    ICON_WATCH_WHITE,
+    ICON_INFO_WHITE
 } from "../../shared/MockData"
 import * as ScreenOrientation from "expo-screen-orientation"
 import {styles} from "./style"
@@ -78,12 +96,28 @@ export default class VideoPlayer extends Component {
             likeActive: false,
             infoModal: false,
             autoPlay: false,
-            commentInputShow: false
+            commentInputShow: false,
+            showFullScreenBottomButtons: false,
+            orientation: '',
         }
     }
 
     async componentDidMount() {
         await this.changeScreenOrientation2()
+        // Dimensions.addEventListener('change', ({window: {width, height}}) => {
+        //     if (width < height) {
+        //         console.log('if')
+        //         this.setState({
+        //             orientation: 'Portrait'
+        //         })
+        //         // this._onFullscreenPressed()
+        //     } else if (width > height) {
+        //         console.log('else')
+        //         this.setState({
+        //             orientation: 'Landscape'
+        //         })
+        //     }
+        // })
     }
 
     async changeScreenOrientation() {
@@ -335,7 +369,8 @@ export default class VideoPlayer extends Component {
 
     _onFullscreenPressed = async () => {
         this.props.changeFullScree()
-        if (!this.props.fullScreenTrigger) {
+        this.handleShowFullScreenBottomButton(false)
+        if (!this.props.changeFullScreen) {
             await this.changeScreenOrientation()
         } else {
             await this.changeScreenOrientation2()
@@ -447,15 +482,18 @@ export default class VideoPlayer extends Component {
         })
     }
 
+    handleShowFullScreenBottomButton = (bool) => {
+        this.setState({
+            showFullScreenBottomButtons: bool
+        })
+    }
+
     render() {
         const {
             closeModal,
             openSubModal,
             changeModal,
-            changeFullScree,
-            openModalTrigger,
             changeModalTrigger,
-            fullScreenTrigger,
             handleCloseSubModal,
             subModalVisible,
             sectionId,
@@ -465,10 +503,11 @@ export default class VideoPlayer extends Component {
             handleChangeSectionModal,
             changeFullScreen,
             handleChangeFollow,
-            changeFollow
+            changeFollow,
+            handleChangeSelectRadio
         } = this.props
 
-        const multiplier = fullScreenTrigger ? 0.5 : 1.10
+        const multiplier = changeFullScreen ? 0.5 : 1.10
         const maximumValue = this.state.playbackInstanceDuration
         const logic = maximumValue * multiplier
 
@@ -551,47 +590,92 @@ export default class VideoPlayer extends Component {
                                     })
                                 )
                                 : (
-                                    subModalData[sectionId].items.map(item => {
-                                        return (
-                                            <View key={item.id}>
-                                                <TouchableOpacity
-                                                    key={item.id}
-                                                    style={{
-                                                        width: windowWidth / 1.25,
-                                                        height: 40,
-                                                        marginTop: 10,
-                                                        marginBottom: 10,
-                                                        justifyContent: 'flex-start',
-                                                        alignItems: 'center',
-                                                        flexDirection: 'row',
-                                                        borderBottomStyle: 'solid',
-                                                        borderBottomColor: '#22242C',
-                                                        borderBottomWidth: 1
-                                                    }}
-                                                    onPress={() => handleChangeSelect(item.id)}
-                                                >
-                                                    <View style={{width: 10}}>
-                                                        {
-                                                            item.bool
-                                                                ? (
-                                                                    <Image source={ICON_CHECK.module}/>
-                                                                )
-                                                                : null
-                                                        }
+                                    sectionId === 3
+                                        ? (
+                                            subModalData[sectionId].items.map(item => {
+                                                return (
+                                                    <View key={item.id}>
+                                                        <TouchableOpacity
+                                                            key={item.id}
+                                                            style={{
+                                                                width: windowWidth / 1.25,
+                                                                height: 40,
+                                                                marginTop: 10,
+                                                                marginBottom: 10,
+                                                                justifyContent: 'flex-start',
+                                                                alignItems: 'center',
+                                                                flexDirection: 'row',
+                                                                borderBottomStyle: 'solid',
+                                                                borderBottomColor: '#22242C',
+                                                                borderBottomWidth: 1
+                                                            }}
+                                                            onPress={() => handleChangeSelectRadio(item.id)}
+                                                        >
+                                                            <View style={{width: 10}}>
+                                                                {
+                                                                    !item.bool
+                                                                        ? (
+                                                                            <Image source={ICON_RADIO.module}/>
+                                                                        )
+                                                                        : <Image source={ICON_RADIO_CHECK.module}/>
+                                                                }
+                                                            </View>
+                                                            <Text
+                                                                style={{
+                                                                    marginLeft: 40,
+                                                                    fontSize: 16,
+                                                                    color: '#A2ACB2',
+                                                                }}
+                                                            >
+                                                                {item.item}
+                                                            </Text>
+                                                        </TouchableOpacity>
                                                     </View>
-                                                    <Text
-                                                        style={{
-                                                            marginLeft: 40,
-                                                            fontSize: 16,
-                                                            color: '#A2ACB2',
-                                                        }}
-                                                    >
-                                                        {item.item}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            </View>
+                                                )
+                                            })
+
                                         )
-                                    })
+                                        : subModalData[sectionId].items.map(item => {
+                                            return (
+                                                <View key={item.id}>
+                                                    <TouchableOpacity
+                                                        key={item.id}
+                                                        style={{
+                                                            width: windowWidth / 1.25,
+                                                            height: 40,
+                                                            marginTop: 10,
+                                                            marginBottom: 10,
+                                                            justifyContent: 'flex-start',
+                                                            alignItems: 'center',
+                                                            flexDirection: 'row',
+                                                            borderBottomStyle: 'solid',
+                                                            borderBottomColor: '#22242C',
+                                                            borderBottomWidth: 1
+                                                        }}
+                                                        onPress={() => handleChangeSelect(item.id)}
+                                                    >
+                                                        <View style={{width: 10}}>
+                                                            {
+                                                                item.bool
+                                                                    ? (
+                                                                        <Image source={ICON_CHECK.module}/>
+                                                                    )
+                                                                    : null
+                                                            }
+                                                        </View>
+                                                        <Text
+                                                            style={{
+                                                                marginLeft: 40,
+                                                                fontSize: 16,
+                                                                color: '#A2ACB2',
+                                                            }}
+                                                        >
+                                                            {item.item}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        })
                                 )
                         }
                         {
@@ -625,6 +709,7 @@ export default class VideoPlayer extends Component {
                                                 height: 36,
                                                 marginBottom: 10
                                             }}
+                                            onPress={() => handleCloseSubModal()}
                                         >
                                             <Text style={styles.buttonText}>
                                                 Cancel
@@ -786,18 +871,18 @@ export default class VideoPlayer extends Component {
                     style={[
                         styles.container,
                         {
-                            paddingTop: fullScreenTrigger || changeModalTrigger ? 0 : 40,
+                            paddingTop: changeFullScreen || changeModalTrigger ? 0 : 40,
                         }
                     ]}
                 >
-                    <View style={fullScreenTrigger || changeModalTrigger ? [styles.rootView] : null}>
+                    <View style={changeFullScreen || changeModalTrigger ? [styles.rootView] : null}>
                         <TouchableOpacity
                             style={
-                                fullScreenTrigger
+                                changeFullScreen
                                     ? !changeModalTrigger
                                     ? {
                                         width: '100%',
-                                        // height: '100%',
+                                        height: '100%',
                                     }
                                     : {
                                         width: windowWidth / 2.5,
@@ -810,7 +895,7 @@ export default class VideoPlayer extends Component {
                             <Video
                                 ref={this._mountVideo}
                                 style={
-                                    !fullScreenTrigger
+                                    !changeFullScreen
                                         ? !changeModalTrigger
                                         ? [styles.video,
                                             {
@@ -842,11 +927,11 @@ export default class VideoPlayer extends Component {
                                         display: this.state.controllerNone ? 'none' : 'flex',
                                         opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
                                         width: '100%',
-                                        height: fullScreenTrigger ? '100%' : VIDEO_CONTAINER_HEIGHT,
-                                        paddingTop: fullScreenTrigger ? 20 : 0,
-                                        paddingBottom: fullScreenTrigger ? 40 : 0,
-                                        paddingLeft: fullScreenTrigger ? 50 : 0,
-                                        paddingRight: fullScreenTrigger ? 50 : 0,
+                                        height: changeFullScreen ? '100%' : VIDEO_CONTAINER_HEIGHT,
+                                        paddingTop: changeFullScreen ? 20 : 0,
+                                        paddingBottom: changeFullScreen ? 40 : 0,
+                                        paddingLeft: changeFullScreen ? 50 : 0,
+                                        paddingRight: changeFullScreen ? 50 : 0,
                                         justifyContent: this.state.maxSeek === 0 ? 'space-between' : 'flex-end',
                                         alignItems: 'flex-end',
                                     }
@@ -859,7 +944,7 @@ export default class VideoPlayer extends Component {
                                         <>
                                             <View style={styles.mediaControllerContainerTop}>
                                                 {
-                                                    fullScreenTrigger
+                                                    changeFullScreen
                                                         ? (
                                                             <Text
                                                                 style={{
@@ -888,15 +973,14 @@ export default class VideoPlayer extends Component {
                                                         height: 20,
                                                         paddingTop: 5
                                                     }]}
-                                                    onPress={openSubModal}
-                                                    disabled={this.state.isLoading || fullScreenTrigger}
+                                                    onPress={() => this.handleShowFullScreenBottomButton(false)}
                                                 >
                                                     <Image style={styles.button} source={ICON_MENU_HORIZONTAL.module}/>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={styles.mediaControllerContainerMiddle}>
                                                 {
-                                                    !fullScreenTrigger
+                                                    !changeFullScreen
                                                         ? (
                                                             <TouchableOpacity
                                                                 style={styles.wrapper}
@@ -951,7 +1035,7 @@ export default class VideoPlayer extends Component {
                                                         )
                                                 }
                                                 {
-                                                    !fullScreenTrigger
+                                                    !changeFullScreen
                                                         ? (
                                                             <TouchableOpacity
                                                                 style={styles.wrapper}
@@ -983,14 +1067,13 @@ export default class VideoPlayer extends Component {
                                     )
                                     : null
                             }
-
-                            <View style={styles.mediaControllerContainerBottom}>
+                            <View style={[styles.mediaControllerContainerBottom, {
+                                height: !changeFullScreen ? 40 : null
+                            }]}>
                                 <View
                                     style={[
                                         styles.playbackContainer,
-                                        {
-                                            opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
-                                        }
+                                        {opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,}
                                     ]}
                                 >
                                     <View style={styles.timestampRow}>
@@ -1054,6 +1137,137 @@ export default class VideoPlayer extends Component {
                                         onSlidingComplete={this._onSeekSliderSlidingComplete}
                                         disabled={this.state.isLoading}
                                     />
+                                    {
+                                        this.state.showFullScreenBottomButtons
+                                            ? (
+                                                <View
+                                                    style={{
+                                                        width: '100%',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                    }}
+                                                >
+                                                    <TouchableOpacity
+                                                        onPress={() => this.handleLike()}
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            paddingHorizontal: 15,
+                                                            paddingVertical: 3,
+                                                        }}
+                                                    >
+                                                        <Image
+                                                            source={
+                                                                !this.state.likeActive
+                                                                    ? ICON_LIKE_WHITE.module : ICON_LIKE_ACTIVE.module
+                                                            }
+                                                        />
+                                                        <Text
+                                                            style={{
+                                                                fontSize: 15,
+                                                                color: !this.state.likeActive ? '#fff' : '#2457FF',
+                                                                marginLeft: 3
+                                                            }}
+                                                        >
+                                                            Like
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            paddingHorizontal: 15,
+                                                            paddingVertical: 3,
+                                                        }}
+                                                        onPress={() => this.onShare()}
+                                                    >
+                                                        <Image source={ICON_SHARE_WHITE.module}/>
+                                                        <Text
+                                                            style={{
+                                                                fontSize: 15,
+                                                                color: '#fff',
+                                                                marginLeft: 3
+                                                            }}
+                                                        >
+                                                            Share
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            paddingHorizontal: 15,
+                                                            paddingVertical: 3,
+                                                        }}
+                                                    >
+                                                        <Image source={ICON_WATCH_WHITE.module}/>
+                                                        <Text
+                                                            style={{
+                                                                fontSize: 15,
+                                                                color: '#fff',
+                                                                marginLeft: 3
+                                                            }}
+                                                        >
+                                                            Watch Later
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            paddingHorizontal: 15,
+                                                            paddingVertical: 3,
+                                                        }}
+                                                        onPress={() => this.handleInfoModal(true)}
+                                                    >
+                                                        <Image source={ICON_INFO_WHITE.module}/>
+                                                        <Text
+                                                            style={{
+                                                                fontSize: 15,
+                                                                color: '#fff',
+                                                                marginLeft: 3
+                                                            }}
+                                                        >
+                                                            Info
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                    {
+                                                        subModalData.map((item, index) => {
+                                                            return (
+                                                                <TouchableOpacity
+                                                                    key={item.id}
+                                                                    style={{
+                                                                        flexDirection: 'row',
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                        paddingHorizontal: 10,
+                                                                        paddingVertical: 3,
+                                                                    }}
+                                                                    onPress={() => handleChangeSectionModal(index)}
+                                                                >
+                                                                    <Image source={item.icon2.module}/>
+                                                                    <Text
+                                                                        style={{
+                                                                            fontSize: 15,
+                                                                            color: '#fff',
+                                                                            marginLeft: 3
+                                                                        }}
+                                                                    >
+                                                                        {item.title}
+                                                                    </Text>
+                                                                </TouchableOpacity>
+                                                            )
+                                                        })
+                                                    }
+                                                </View>
+                                            )
+                                            : null
+                                    }
                                 </View>
                             </View>
                         </View>
@@ -1425,7 +1639,7 @@ export default class VideoPlayer extends Component {
                             : null
                     }
                     {
-                       !fullScreenTrigger
+                        !changeFullScreen
                             ? (
                                 this.state.commentInputShow
                                     ? (
