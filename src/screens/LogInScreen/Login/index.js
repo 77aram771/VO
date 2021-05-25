@@ -30,8 +30,8 @@ export const Login = ({navigation}) => {
     const [passwordType, setPasswordType] = useState(true)
     const [emailErrorText, setEmailErrorText] = useState('')
     const [apiErrorText, setApiErrorText] = useState('')
-    const [email, setEmail] = useState('admin@vo.com')
-    const [password, setPassword] = useState('2mW3f-P6_yWuq@=sLRMK_EWyPBe-=7kb')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [emailError, setEmailError] = useState(false)
     const [errorPassword, setErrorPassword] = useState(false)
     const [errorLogin, setErrorLogin] = useState(false)
@@ -40,6 +40,7 @@ export const Login = ({navigation}) => {
     const [focusPass, setFocusPass] = useState(false)
     const {logIN} = useContext(Context)
     const {setLogin} = useContext(Context)
+    const {setUserInfo} = useContext(Context)
 
     const dispatch = useDispatch()
     const data = useSelector((state) => state.AuthReducer.data)
@@ -174,9 +175,10 @@ export const Login = ({navigation}) => {
                 if (response.data.accepted == false) {
                     setApiErrorText(response.data.errorMessages[0])
                 } else if (response.data.accepted == true) {
-                    const user = response.data.data[0]
+                    // let user = response.data.data[0]
                     (async () => {
-                        await AsyncStorage.setItem('user', JSON.stringify(user))
+                        await AsyncStorage.setItem('user', JSON.stringify(response.data.data[0]))
+                        setUserInfo(response.data.data[0])
                     })()
                     setApiErrorText('')
                 } else {
@@ -266,7 +268,10 @@ export const Login = ({navigation}) => {
                                             if (response.data.accepted == false) {
                                                 setApiErrorText(response.data.errorMessages[0])
                                             } else if (response.data.accepted == true) {
-
+                                                const Token = response.data.data[0].accessToken
+                                                AsyncStorage.setItem('Token', Token)
+                                                getUser(Token)
+                                                setLogin()
                                                 setApiErrorText('')
                                             } else {
                                                 setApiErrorText("Something went wrong. Please try again.")
@@ -279,7 +284,10 @@ export const Login = ({navigation}) => {
                                 }
                             } else if (response.data.accepted == true) {
                                 console.log('true')
-
+                                const Token = response.data.data[0].accessToken
+                                AsyncStorage.setItem('Token', Token)
+                                getUser(Token)
+                                setLogin()
                             } else {
                                 console.log('else')
                                 // setApiErrorText("Something went wrong. Please try again.")
@@ -401,7 +409,10 @@ export const Login = ({navigation}) => {
                                             if (response.data.accepted == false) {
                                                 setApiErrorText(response.data.errorMessages[0])
                                             } else if (response.data.accepted == true) {
-
+                                                const Token = response.data.data[0].accessToken
+                                                AsyncStorage.setItem('Token', Token)
+                                                getUser(Token)
+                                                setLogin()
                                                 setApiErrorText('')
                                             } else {
                                                 setApiErrorText("Something went wrong. Please try again.")
@@ -414,7 +425,10 @@ export const Login = ({navigation}) => {
                                 }
                             } else if (response.data.accepted == true) {
                                 console.log('true')
-
+                                const Token = response.data.data[0].accessToken
+                                AsyncStorage.setItem('Token', Token)
+                                getUser(Token)
+                                setLogin()
                             } else {
                                 console.log('else')
                                 // setApiErrorText("Something went wrong. Please try again.")
@@ -519,7 +533,10 @@ export const Login = ({navigation}) => {
                                             if (response.data.accepted == false) {
                                                 setApiErrorText(response.data.errorMessages[0])
                                             } else if (response.data.accepted == true) {
-
+                                                const Token = response.data.data[0].accessToken
+                                                AsyncStorage.setItem('Token', Token)
+                                                getUser(Token)
+                                                setLogin()
                                                 setApiErrorText('')
                                             } else {
                                                 setApiErrorText("Something went wrong. Please try again.")
@@ -532,7 +549,10 @@ export const Login = ({navigation}) => {
                                 }
                             } else if (response.data.accepted == true) {
                                 console.log('true')
-
+                                const Token = response.data.data[0].accessToken
+                                AsyncStorage.setItem('Token', Token)
+                                getUser(Token)
+                                setLogin()
                             } else {
                                 console.log('else')
                                 // setApiErrorText("Something went wrong. Please try again.")

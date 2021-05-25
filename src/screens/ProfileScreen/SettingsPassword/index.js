@@ -5,14 +5,15 @@ import {
     View,
     Image,
     TouchableOpacity,
-    TouchableWithoutFeedback, TextInput
+    TouchableWithoutFeedback, TextInput, AsyncStorage
 } from "react-native";
-import {windowHeight, windowWidth} from "../../../shared/Const"
+import {API_URL, windowHeight, windowWidth} from "../../../shared/Const"
 import {style} from './style'
 import {LinearGradient} from "expo-linear-gradient";
 import { BlurView } from 'expo-blur';
 import Context from "../../../../Context";
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn";
+import axios from "axios";
 
 
 
@@ -32,6 +33,11 @@ export const SettingsPassword = () => {
     const [cpassErrorText, setCpassErrorText] = useState('')
     const [cuPassErrorText, setCuPassErrorText] = useState('')
     const [apiErrorText, setApiErrorText] = useState('')
+    const [apiDoneText, setApiDoneText] = useState('')
+
+    const [pass, setPass] = useState('')
+    const [cPass, setCPass] = useState('')
+    const [cuPass, setCuPass] = useState('')
 
     const dismiseKey = () => {
         Keyboard.dismiss();
@@ -62,15 +68,93 @@ export const SettingsPassword = () => {
     }
 
     const onChangePass = (val) => {
-        setPassword(val)
+        setPass(val)
     }
 
     const onChangeCPass = (val) => {
-        setCpassword(val)
+        setCPass(val)
     }
 
     const onChangeCuPass = (val) => {
-        setCupassword(val)
+        setCuPass(val)
+    }
+
+    const changePass = async () => {
+        if (!cuPass) {
+            setErrorCuPass(true)
+            setCuPassErrorText('Incorrect Password')
+            return;
+        }
+        setErrorCuPass(false)
+        if (!pass) {
+            setErrorPass(true)
+            setPassErrorText('Incorrect Password')
+            return;
+        }
+        setErrorPass(false)
+        if (pass.length < 8) {
+            setErrorPass(true)
+            setPassErrorText("The password must be min 8 ");
+            return;
+        }
+        setErrorPass(false)
+        if (pass.search(/\d/) == -1) {
+            setErrorPass(true)
+            setPassErrorText("the password must contain at least one alphabetic character and at least one numeric character");
+            return;
+        }
+        setErrorPass(false)
+        if (pass.search(/[a-zA-Z]/) == -1) {
+            setErrorPass(true)
+            setPassErrorText("the password must contain at least one alphabetic character and at least one numeric character")
+            return;
+        }
+        setErrorPass(false)
+        if (!cPass) {
+            setErrorCPass(true)
+            setCpassErrorText("Incorrect Password");
+            return;
+        }
+        setErrorCPass(false)
+        if (cPass != pass) {
+            setErrorCPass(true)
+            setCpassErrorText("The Repeat password must be same password")
+            return;
+        }
+        setErrorCPass(false)
+
+
+        try {
+            let data = {
+                currentPassword: cuPass,
+                newPassword: pass
+            };
+            console.log(data)
+            const token = await AsyncStorage.getItem('Token')
+            await axios
+                .post(`${API_URL}/api/User/ChangePassword`, data)
+                .then((response) => {
+                    console.log(response)
+                    if (response.data.accepted == false) {
+                        setApiErrorText(response.data.errorMessages[0])
+                        console.log(apiErrorText)
+                    } else if (response.data.accepted == true) {
+                        console.log(response)
+                        // navigation.navigate("ConfirmRegScreen", {
+                        //     emailAddress: email,
+                        //     userPassword: password,
+                        // });
+                    } else {
+                        setApiErrorText("Something went wrong. Please try again.")
+                    }
+                })
+                .catch((error) => {
+                    console.log(error.response)
+                    setApiErrorText("Something went wrong. Please try again.")
+                })
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     return (
@@ -174,6 +258,7 @@ export const SettingsPassword = () => {
                                 overflow: 'hidden',
                                 height: (windowHeight * 4 ) / 100
                             }}
+                            onPress={changePass}
                         >
                             <LinearGradient
                                 colors={['#2727F5', '#001671']}
@@ -225,8 +310,8 @@ export const SettingsPassword = () => {
                             />
 
                             <TouchableWithoutFeedback
-                                onPressIn={showPass}
-                                onPressOut={hidePass}
+                                onPressIn={showCuPass}
+                                onPressOut={hideCuPass}
                             >
                                 <Image
                                     style={style.showPass}
@@ -310,6 +395,7 @@ export const SettingsPassword = () => {
                             )}
                         </View>
                         <Text style={style.apierrorText}>{apiErrorText}</Text>
+                        <Text style={style.apidoneText}>{apiDoneText}</Text>
                     </View>
                 </View>
             </View>

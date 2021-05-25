@@ -1,11 +1,23 @@
 import React, {useState} from "react";
-import {ActivityIndicator, Keyboard, Text, View, Image, TextInput, TouchableWithoutFeedback} from "react-native"
+import {
+    ActivityIndicator,
+    Keyboard,
+    Text,
+    View,
+    Image,
+    TextInput,
+    TouchableWithoutFeedback,
+    AsyncStorage
+} from "react-native"
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn"
 import {ExternalLogin} from "../../../components/ExternalLogin"
 // import {CheckBox} from " ../../../components/UI/CheckBox"
 import {style} from './style'
 import axios from "axios";
-import {API_URL} from "../../../shared/Const";
+import {API_URL, FB_APP_ID, IOS_GOOGLE_ID} from "../../../shared/Const";
+import * as Facebook from "expo-facebook";
+import * as Google from "expo-google-app-auth";
+import * as AppleAuthentication from "expo-apple-authentication";
 
 let load = false
 
@@ -161,6 +173,433 @@ export const Register = ({navigation}) => {
         }
     }
 
+
+    const getUser = async (token) => {
+
+        await axios
+            .get(`${API_URL}/api/User`, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': "Bearer " + token,
+                }
+            })
+            .then((response) => {
+                // console.log('res-', response.data)
+                if (response.data.accepted == false) {
+                    setApiErrorText(response.data.errorMessages[0])
+                } else if (response.data.accepted == true) {
+                    const user = response.data.data[0]
+                    (async () => {
+                        await AsyncStorage.setItem('user', JSON.stringify(user))
+                    })()
+                    setApiErrorText('')
+                } else {
+                    setApiErrorText("Something went wrong. Please try again.")
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+                setApiErrorText("Something went wrong. Please try again.")
+            })
+    }
+
+    const externalLogin = (type) => {
+        if (type === 'facebook') {
+            fbSignIn()
+        } else if (type === 'apple') {
+            authApple()
+        } else if (type === 'google') {
+            authGoogle()
+        } else {
+            setApiErrorText('Something went wrong. Please try again.')
+        }
+    }
+
+    const fbSignIn = () => {
+        signInWithFacebookAsync()
+            .then((res) => {
+                if (res) {
+                    let data = {
+                        provider: "Google",
+                        providerUserId: res.user.id,
+                        email: 'blabla@gmail.com',
+                        device: {
+                            deviceId: "string",
+                            deviceType: 1,
+                            model: "string",
+                            os: "string",
+                            ip: "string",
+                            appVersion: "string"
+                        },
+                    };
+
+                    axios.post(`${API_URL}/api/Account/External/SignIn`, data)
+                        .then((response) => {
+                            console.log('res-', response)
+                            if (response.data.accepted == false) {
+                                if (
+                                    !res.email ||
+                                    !res.first_name ||
+                                    !res.last_name ||
+                                    !res.gender ||
+                                    !res.birthDate
+                                ) {
+                                    console.log('missing', res)
+                                    navigation.navigate("MissingContScreen", {
+                                        provider: "Facebook",
+                                        providerUserId: res.id,
+                                        socialEmail: res.email,
+                                        socialFirstName: res.first_name,
+                                        socialLastName: res.last_name,
+                                        socialGender: res.gender,
+                                        socialBirthDate: res.birthDate,
+                                    });
+                                } else {
+                                    let data = {
+                                        provider: "Facebook",
+                                        providerUserId: res.id,
+                                        email: res.email,
+                                        firstName: res.first_name,
+                                        lastName: res.last_name,
+                                        gender: res.gender,
+                                        birthDate: res.birthDate,
+                                        device: {
+                                            deviceId: "string",
+                                            deviceType: 1,
+                                            model: "string",
+                                            os: "string",
+                                            ip: "string",
+                                            appVersion: "string"
+                                        },
+                                    };
+                                    console.log(data);
+                                    axios
+                                        .post(`${API_URL}/api/Account/External/SignUp`, data)
+                                        .then((response) => {
+                                            console.log('res-', response)
+                                            if (response.data.accepted == false) {
+                                                setApiErrorText(response.data.errorMessages[0])
+                                            } else if (response.data.accepted == true) {
+                                                const Token = response.data.data[0].accessToken
+                                                AsyncStorage.setItem('Token', Token)
+                                                getUser(Token)
+                                                setLogin()
+                                                setApiErrorText('')
+                                            } else {
+                                                setApiErrorText("Something went wrong. Please try again.")
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.log(error)
+                                            setApiErrorText("Something went wrong. Please try again.")
+                                        })
+                                }
+                            } else if (response.data.accepted == true) {
+                                console.log('true')
+                                const Token = response.data.data[0].accessToken
+                                AsyncStorage.setItem('Token', Token)
+                                getUser(Token)
+                                setLogin()
+                            } else {
+                                console.log('else')
+                                // setApiErrorText("Something went wrong. Please try again.")
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            // setApiErrorText("Something went wrong. Please try again.")
+                        })
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+    async function signInWithFacebookAsync() {
+        // try {
+        await Facebook.initializeAsync(FB_APP_ID);
+        const {
+            type,
+            token,
+            expires,
+            permissions,
+            declinedPermissions,
+        } = await Facebook.logInWithReadPermissionsAsync({
+            permissions: [
+                "public_profile",
+                "email",
+                "user_gender",
+                "user_birthday",
+            ],
+        });
+        console.log(type)
+        switch (type) {
+            case "success": {
+                // Get the user's name using Facebook's Graph API
+                const response = await fetch(
+                    `https://graph.facebook.com/me?access_token=${token}&fields=id,email,first_name,last_name,name,gender,picture.type(large)`
+                );
+                const result = await response.json();
+                return result;
+                break;
+            }
+            case "cancel": {
+                return false;
+                break;
+            }
+            default: {
+                return false;
+            }
+        }
+        // } catch (e) {
+        //     return false;
+        // }
+    }
+
+    const authGoogle = async () => {
+        signInWithGoogleAsync()
+            .then((res) => {
+                if (res) {
+                    let data = {
+                        provider: "Google",
+                        providerUserId: res.user.id,
+                        email: 'blabla@gmail.com',
+                        device: {
+                            deviceId: "string",
+                            deviceType: 1,
+                            model: "string",
+                            os: "string",
+                            ip: "string",
+                            appVersion: "string"
+                        },
+                    };
+
+                    axios.post(`${API_URL}/api/Account/External/SignIn`, data)
+                        .then((response) => {
+                            console.log('res-', response)
+                            if (response.data.accepted == false) {
+                                if (
+                                    !res.user.email ||
+                                    !res.user.givenName ||
+                                    !res.user.familyName ||
+                                    !res.user.gender ||
+                                    !res.user.birthDate
+                                ) {
+                                    console.log('missing', res)
+                                    navigation.navigate("MissingContScreen", {
+                                        provider: "Google",
+                                        providerUserId: res.user.id,
+                                        socialEmail: res.user.email,
+                                        socialFirstName: res.user.givenName,
+                                        socialLastName: res.user.familyName,
+                                        socialGender: res.user.gender,
+                                        socialBirthDate: res.user.birthDate,
+                                    });
+                                } else {
+                                    let data = {
+                                        provider: "Google",
+                                        providerUserId: res.user.id,
+                                        email: res.user.email,
+                                        firstName: res.user.givenName,
+                                        lastName: res.user.familyName,
+                                        gender: res.user.gender,
+                                        birthDate: res.user.birthDate,
+                                        device: {
+                                            deviceId: "string",
+                                            deviceType: 1,
+                                            model: "string",
+                                            os: "string",
+                                            ip: "string",
+                                            appVersion: "string"
+                                        },
+                                    };
+                                    console.log(data);
+                                    axios
+                                        .post(`${API_URL}/api/Account/External/SignUp`, data)
+                                        .then((response) => {
+                                            console.log('res-', response)
+                                            if (response.data.accepted == false) {
+                                                setApiErrorText(response.data.errorMessages[0])
+                                            } else if (response.data.accepted == true) {
+                                                const Token = response.data.data[0].accessToken
+                                                AsyncStorage.setItem('Token', Token)
+                                                getUser(Token)
+                                                setLogin()
+                                                setApiErrorText('')
+                                            } else {
+                                                setApiErrorText("Something went wrong. Please try again.")
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.log(error)
+                                            setApiErrorText("Something went wrong. Please try again.")
+                                        })
+                                }
+                            } else if (response.data.accepted == true) {
+                                console.log('true')
+                                const Token = response.data.data[0].accessToken
+                                AsyncStorage.setItem('Token', Token)
+                                getUser(Token)
+                                setLogin()
+                            } else {
+                                console.log('else')
+                                // setApiErrorText("Something went wrong. Please try again.")
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            // setApiErrorText("Something went wrong. Please try again.")
+                        })
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+    async function signInWithGoogleAsync() {
+        try {
+            const result = await Google.logInAsync({
+                behavior: "web",
+                iosClientId: IOS_GOOGLE_ID,
+                //androidClientId: AND_CLIENT_ID,
+                scopes: [
+                    "profile",
+                    "email",
+                    "https://www.googleapis.com/auth/user.gender.read",
+                    "https://www.googleapis.com/auth/user.birthday.read",
+                ],
+            });
+
+            if (result.type === "success") {
+                return result;
+            } else {
+                return { cancelled: true };
+            }
+        } catch (e) {
+            return { error: true };
+        }
+    }
+
+    const authApple = () => {
+        signInWithAppleAsync()
+            .then((res) => {
+                if (res) {
+                    let data = {
+                        provider: "Google",
+                        providerUserId: res.user.id,
+                        email: 'blabla@gmail.com',
+                        device: {
+                            deviceId: "string",
+                            deviceType: 1,
+                            model: "string",
+                            os: "string",
+                            ip: "string",
+                            appVersion: "string"
+                        },
+                    };
+
+                    axios.post(`${API_URL}/api/Account/External/SignIn`, data)
+                        .then((response) => {
+                            console.log('res-', response)
+                            if (response.data.accepted == false) {
+                                if (
+                                    !res.email ||
+                                    !res.fullName.givenName ||
+                                    !res.fullName.familyName ||
+                                    !res.fullName.gender ||
+                                    !res.fullName.birthDate
+                                ) {
+                                    console.log('missing', res)
+                                    navigation.navigate("MissingContScreen", {
+                                        provider: "Apple",
+                                        providerUserId: res.authorizationCode,
+                                        socialEmail: res.email,
+                                        socialFirstName: res.fullName.givenName,
+                                        socialLastName: res.fullName.familyName,
+                                        socialGender: res.fullName.gender,
+                                        socialBirthDate: res.fullName.birthDate,
+                                    });
+                                } else {
+                                    let data = {
+                                        provider: "Apple",
+                                        providerUserId: res.id,
+                                        email: res.email,
+                                        firstName: res.first_name,
+                                        lastName: res.last_name,
+                                        gender: res.gender,
+                                        birthDate: res.birthDate,
+                                        device: {
+                                            deviceId: "string",
+                                            deviceType: 1,
+                                            model: "string",
+                                            os: "string",
+                                            ip: "string",
+                                            appVersion: "string"
+                                        },
+                                    };
+                                    console.log(data);
+                                    axios
+                                        .post(`${API_URL}/api/Account/External/SignUp`, data)
+                                        .then((response) => {
+                                            console.log('res-', response)
+                                            if (response.data.accepted == false) {
+                                                setApiErrorText(response.data.errorMessages[0])
+                                            } else if (response.data.accepted == true) {
+                                                const Token = response.data.data[0].accessToken
+                                                AsyncStorage.setItem('Token', Token)
+                                                getUser(Token)
+                                                setLogin()
+                                                setApiErrorText('')
+                                            } else {
+                                                setApiErrorText("Something went wrong. Please try again.")
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.log(error)
+                                            setApiErrorText("Something went wrong. Please try again.")
+                                        })
+                                }
+                            } else if (response.data.accepted == true) {
+                                console.log('true')
+                                const Token = response.data.data[0].accessToken
+                                AsyncStorage.setItem('Token', Token)
+                                getUser(Token)
+                                setLogin()
+                            } else {
+                                console.log('else')
+                                // setApiErrorText("Something went wrong. Please try again.")
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            // setApiErrorText("Something went wrong. Please try again.")
+                        })
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+    async function signInWithAppleAsync() {
+        try {
+            const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+            });
+            if (credential) {
+                return credential;
+            }
+        } catch (e) {
+            if (e.code === "ERR_CANCELED") {
+                // handle that the user canceled the sign-in flow
+            } else {
+                // handle other errors
+            }
+        }
+    }
+
     return (
         <TouchableWithoutFeedback onPress={dismiseKey}>
             <View style={style.container}>
@@ -283,7 +722,7 @@ export const Register = ({navigation}) => {
                     {/*    onPress={handleCheckBox}*/}
                     {/*    text='Accept terms and conditions'*/}
                     {/*/>*/}
-                    <ExternalLogin/>
+                    <ExternalLogin handlePress={externalLogin}/>
 
                 </View>
             </View>

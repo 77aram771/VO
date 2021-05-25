@@ -23,171 +23,171 @@ const DATA = [
         id: "1",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "2",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "3",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "4",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "5",
         is_new: false,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "6",
         is_new: false,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "7",
         is_new: false,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "8",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "9",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "../../",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "10",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "11",
         is_new: false,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "12",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "13",
         is_new: false,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "14",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "15",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "16",
         is_new: false,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
     {
         id: "17",
         is_new: true,
         profile:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-pick.png",
+            "src/assets/images/notification-pick.png",
         video: "Stranger Things - New episode",
         name: "Netflix posted a new video:",
         image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/notification-video-img.png",
+            "src/assets/images/notification-video-img.png",
     },
 ];
 
@@ -327,7 +327,7 @@ export const Notifications = ({navigation}) => {
                                     }}
                                 >
                                     <Image
-                                        source={{uri: item.profile}}
+                                        source={require('../../../assets/images/notification-pick.png')}
                                         resizeMode="contain"
                                         style={{
                                             width: (windowWidth * 10) / 100,
@@ -381,7 +381,7 @@ export const Notifications = ({navigation}) => {
                                             width: (windowWidth * 30) / 100,
                                             height: 40,
                                         }}
-                                        source={{uri: item.image}}
+                                        source={require('../../../assets/images/notification-video-img.png')}
                                     ></Image>
                                 </View>
                             </TouchableOpacity>

@@ -1,5 +1,5 @@
 import React, {useState, useContext} from "react"
-import {View, Text, ScrollView, TouchableOpacity, Image} from "react-native"
+import {View, Text, ScrollView, TouchableOpacity, Image, Modal} from "react-native"
 import GestureRecognizer from 'react-native-swipe-gestures'
 import ModalWrapper from "react-native-modal-wrapper"
 import {videoSubModalObject} from "../../shared/MockData"
@@ -7,6 +7,8 @@ import Context from "../../../Context"
 import VideoPlayer from "../../components/VideoPlayer"
 import {styles} from "./style"
 import {windowHeight} from "../../shared/Const"
+import {Notifications} from "../HomeScreen/Notifications"
+
 
 const config = {
     velocityThreshold: 0.3,
@@ -24,6 +26,8 @@ export function HomeScreen({navigation}) {
     const [changeSubModal, setChangeSubModal] = useState(false)
     const [sectionId, setSectionId] = useState(null)
     const [changeFollow, setChangeFollow] = useState(null)
+    const {notModalVisible} = useContext(Context)
+
 
     const onSwipeUp = (gestureState) => {
         console.log('test UP')
@@ -93,6 +97,29 @@ export function HomeScreen({navigation}) {
 
     return (
         <>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={notModalVisible}
+                onRequestClose={() => {alert('Modal has been closed.')}}
+                supportedOrientations={['portrait', 'landscape']}
+                presentationStyle="overFullScreen"
+            >
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    <View style={{
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        width: '100%',
+                        height: '100%'
+                    }}>
+                        <Notifications/>
+                    </View>
+                </View>
+            </Modal>
             <ModalWrapper
                 supportedOrientations={['portrait', 'landscape']}
                 isNative={!changeModal}

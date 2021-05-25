@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useContext, useState} from "react"
 import {
     ActivityIndicator,
     Keyboard,
@@ -17,6 +17,7 @@ import {windowHeight, windowWidth} from "../../../shared/Const"
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn"
 import {ExternalLogin} from "../../../components/ExternalLogin"
 import {style} from './style'
+import Context from "../../../../Context";
 
 
 const DATA = [
@@ -129,6 +130,7 @@ export const Topic = () => {
     const [apiErrorText, setApiErrorText] = useState('')
     const [data, setData] = useState(DATA)
     const [percentw, setPercentw] = useState((windowWidth - (windowWidth * 15) / 100) / 3.2)
+    const {setLogin} = useContext(Context)
 
     const dismiseKey = () => {
         Keyboard.dismiss();
@@ -154,12 +156,16 @@ export const Topic = () => {
       setData(topics)
     }
     const skip = () => {
-
+        setLogin()
     }
     const renderElement = (item) => {
         if(item)
           return <Image source={require('../../../assets/images/icons/check-icon.png')} />;
         return null;
+    }
+
+    const submite = () => {
+        setLogin()
     }
 
 
@@ -261,7 +267,7 @@ export const Topic = () => {
                         require('../../../assets/images/backgrounds/transparent-gradient.png')
                     }
                     />
-                    <PrimaryBtn text="Submit"/>
+                    <PrimaryBtn text="Submit" handlePress={submite}/>
                     <TouchableWithoutFeedback onPress={skip}>
                     <Text style={style.link}>Skip</Text>
                     </TouchableWithoutFeedback>

@@ -65,7 +65,7 @@ export const ProfilePic = ({navigation}) => {
         });
     };
     const skip = () => {
-
+        navigation.navigate("TopicScreen")
     }
     const openPopup = () => {
         Animated.timing(top, {
