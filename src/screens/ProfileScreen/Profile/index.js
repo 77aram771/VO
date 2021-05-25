@@ -23,8 +23,8 @@ import {MyVideos} from "../MyVideos"
 import {WatchedVideos} from "../WatchedVideos";
 import {LikedVideos} from "../LikedVideos";
 import {Settings} from "../Settings";
-import BlurView from "expo-blur/build/BlurView.web";
 import axios from "axios";
+import Camera from "expo-camera/src/Camera";
 
 
 const DATA = [
@@ -75,6 +75,26 @@ export const Profile = ({navigation}) => {
     const top = useRef(new Animated.Value(-300)).current
     const [data, setData] = useState(DATA)
     const {user} = useContext(Context)
+    const {setUserInfo} = useContext(Context)
+    const {goToEditProfile} = useContext(Context)
+    const {profModalVisible} = useContext(Context)
+    const {popupModalVisible} = useContext(Context)
+    const {openMore} = useContext(Context)
+    const {myVideosModalVisible} = useContext(Context)
+    const {openMyVideos} = useContext(Context)
+    const {watchedVideosModalVisible} = useContext(Context)
+    const {openWatchedVideos} = useContext(Context)
+    const {likedVideosModalVisible} = useContext(Context)
+    const {openLikedVideos} = useContext(Context)
+    const {settingsModalVisible} = useContext(Context)
+    const {openSettings} = useContext(Context)
+
+    useEffect(() => {
+        (async () => {
+            getUser()
+        })();
+
+    }, []);
 
     const dismiseKey = () => {
         Keyboard.dismiss();
@@ -93,18 +113,37 @@ export const Profile = ({navigation}) => {
             duration: 300
         }).start();
     }
-    const {goToEditProfile} = useContext(Context)
-    const {profModalVisible} = useContext(Context)
-    const {popupModalVisible} = useContext(Context)
-    const {openMore} = useContext(Context)
-    const {myVideosModalVisible} = useContext(Context)
-    const {openMyVideos} = useContext(Context)
-    const {watchedVideosModalVisible} = useContext(Context)
-    const {openWatchedVideos} = useContext(Context)
-    const {likedVideosModalVisible} = useContext(Context)
-    const {openLikedVideos} = useContext(Context)
-    const {settingsModalVisible} = useContext(Context)
-    const {openSettings} = useContext(Context)
+
+    const getUser = async () => {
+        console.log('get user')
+        const token = await AsyncStorage.getItem('Token')
+        await axios
+            .get(`${API_URL}/api/User`, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': "Bearer " + token,
+                }
+            })
+            .then((response) => {
+                console.log('res-', response.data)
+                if (response.data.accepted == false) {
+                    setApiErrorText(response.data.errorMessages[0])
+                } else if (response.data.accepted == true) {
+                    // let user = response.data.data[0]
+                    (async () => {
+                        await AsyncStorage.setItem('user', JSON.stringify(response.data.data[0]))
+                        setUserInfo(response.data.data[0])
+                    })()
+                    // setApiErrorText('')
+                } else {
+                    // setApiErrorText("Something went wrong. Please try again.")
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+                setApiErrorText("Something went wrong. Please try again.")
+            })
+    }
 
     return (
         <>
@@ -462,7 +501,7 @@ export const Profile = ({navigation}) => {
                                     color: 'white',
                                     width: (windowWidth * 80) / 100,
                                 }}
-                            >{user.firstName} {user.lastName}</Text>
+                            >{user ? user.firstName: 'Name'} {user ? user.lastName : 'Surname'}</Text>
                         </View>
                         <TouchableWithoutFeedback onPress={openMore}>
                             <Image
@@ -487,13 +526,25 @@ export const Profile = ({navigation}) => {
                                 overflow: 'hidden',
                             }}
                         >
-                            <Image
-                                source={{uri: user.coverPhoto}}
-                                resizeMode="cover"
-                                style={{
-                                    width: windowWidth,
-                                }}
-                            />
+                            {user.coverPhoto && (
+                                <Image
+                                    source={{uri: user.coverPhoto}}
+                                    resizeMode="cover"
+                                    style={{
+                                        width: windowWidth,
+                                    }}
+                                />
+                            )}
+                            {user.coverPhoto == null && (
+                                <Image
+                                    source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
+                                    resizeMode="cover"
+                                    style={{
+                                        width: windowWidth,
+                                        top: -50
+                                    }}
+                                />
+                            )}
                         </View>
                         <View
                             style={{
@@ -515,17 +566,61 @@ export const Profile = ({navigation}) => {
                                         width: (windowWidth * 20) / 100,
                                     }}
                                 >
-                                    <Image
-                                        source={{uri: user.avatar}}
-                                        resizeMode="contain"
-                                        style={{
-                                            height: 80,
-                                            left: 0,
-                                            borderRadius: 1000,
-                                            borderWidth: 4,
-                                            borderColor: 'black',
-                                        }}
-                                    />
+                                    {user.avatar && (
+                                        <Image
+                                            source={{uri: user.avatar}}
+                                            resizeMode="contain"
+                                            style={{
+                                                height: 80,
+                                                left: 0,
+                                                borderRadius: 1000,
+                                                borderWidth: 4,
+                                                borderColor: 'black',
+                                            }}
+                                        />
+                                    )}
+                                    {user.avatar == null && user.gender === 'female' && (
+                                        <Image
+                                            source={require('../../../assets/images/female.png')}
+                                            resizeMode="contain"
+                                            style={{
+                                                width: 80,
+                                                height: 80,
+                                                left: 0,
+                                                borderRadius: 1000,
+                                                borderWidth: 4,
+                                                borderColor: 'black',
+                                            }}
+                                        />
+                                    )}
+                                    {user.avatar == null && user.gender === 'male' && (
+                                        <Image
+                                            source={require('../../../assets/images/male.jpeg')}
+                                            resizeMode="contain"
+                                            style={{
+                                                width: 80,
+                                                height: 80,
+                                                left: 0,
+                                                borderRadius: 1000,
+                                                borderWidth: 4,
+                                                borderColor: 'black',
+                                            }}
+                                        />
+                                    )}
+                                    {user.avatar == null && user.gender != 'male' && user.gender != 'female' && (
+                                        <Image
+                                            source={require('../../../assets/images/male.jpeg')}
+                                            resizeMode="contain"
+                                            style={{
+                                                width: 80,
+                                                height: 80,
+                                                left: 0,
+                                                borderRadius: 1000,
+                                                borderWidth: 4,
+                                                borderColor: 'black',
+                                            }}
+                                        />
+                                    )}
                                 </View>
                                 <View
                                     style={{
@@ -636,22 +731,32 @@ export const Profile = ({navigation}) => {
                                 top: -20
                             }}
                         >
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    color: 'white',
-                                }}
-                            >{user.description}
-                                <TouchableWithoutFeedback>
-                                    <Text
-                                        style={{
-                                            color: '#198CFF',
-                                            fontSize: 12,
-                                            textDecorationLine: 'underline',
-                                        }}
-                                    >more</Text>
-                                </TouchableWithoutFeedback>
-                            </Text>
+                            {user.deceleration && (
+                                <Text
+                                    style={{
+                                        fontSize: 12,
+                                        color: 'white',
+                                    }}
+                                >{user.description}
+                                    <TouchableWithoutFeedback>
+                                        <Text
+                                            style={{
+                                                color: '#198CFF',
+                                                fontSize: 12,
+                                                textDecorationLine: 'underline',
+                                            }}
+                                        >more</Text>
+                                    </TouchableWithoutFeedback>
+                                </Text>
+                            )}
+                            {user.description == null && (
+                                <Text
+                                    style={{
+                                        fontSize: 12,
+                                        color: 'white',
+                                    }}
+                                >No about text</Text>
+                            )}
                         </View>
                     </View>
 

@@ -203,6 +203,13 @@ export const style = StyleSheet.create({
     fontSize: 14,
     marginBottom: 10,
   },
+  apidoneText: {
+    position: 'relative',
+    textAlign: 'center',
+    color: 'green',
+    fontSize: 14,
+    marginBottom: 10,
+  },
   showPass: {
     position: 'absolute',
     top: 0,

@@ -29,8 +29,10 @@ export const ForgotPass = ({navigation}) => {
   const [passErrorText, setPassErrorText] = useState("");
   const [cpassErrorText, setCpassErrorText] = useState("");
   const [apiErrorText, setApiErrorText] = useState("");
+  const [apiDoneText, setApiDoneText] = useState("");
   const [email, setEmail] = useState("asdwefw ds");
   const [password, setPassword] = useState("");
+  const [cpassword, setCPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
   const [focusEmail, setFocusEmail] = useState(false);
@@ -43,6 +45,7 @@ export const ForgotPass = ({navigation}) => {
   const input3 = useRef(null)
   const input4 = useRef(null)
   let code = ["", "", "", ""]
+  const [codeToken, setCodeToken] = useState('')
 
   useEffect(() => {
 
@@ -77,6 +80,9 @@ export const ForgotPass = ({navigation}) => {
   const onChangePass = (val) => {
     setPassword(val);
   };
+  const onChangeCPass = (val) => {
+    setCPassword(val);
+  };
   const resendEmail = async () => {
     let data = {
       email: email,
@@ -89,7 +95,8 @@ export const ForgotPass = ({navigation}) => {
             if (response.data.accepted == false) {
               setApiErrorText(res.data.errorMessages[0])
             } else if (response.data.accepted == true) {
-
+              setApiErrorText('')
+              setApiDoneText("Email was send")
             } else {
               setApiErrorText("Something went wrong. Please try again.")
             }
@@ -125,13 +132,14 @@ export const ForgotPass = ({navigation}) => {
             console.log('res-', response)
             if (response.data.accepted == false) {
               console.log('false')
-              setApiErrorText(res.data.errorMessages[0])
+              setApiErrorText(response.data.errorMessages[0])
               // this.apiForgotErrorText = res.data.errorMessages[0];
               // this.apiForgotError = 1;
             } else if (response.data.accepted == true) {
               console.log('true')
               setResetPass(false)
               setEmailSend(true)
+              setApiErrorText('')
               // this.resetpass = 0;
               // this.emailsend = 1;
             } else {
@@ -182,6 +190,8 @@ export const ForgotPass = ({navigation}) => {
       }
       let token = code.join("");
 
+      setCodeToken(token)
+
       console.log(token)
 
       let body = {
@@ -208,8 +218,11 @@ export const ForgotPass = ({navigation}) => {
                 setColor('red')
               } else if (response.data.accepted == true) {
                 console.log('true')
-                setCodeDone(true)
-                setEmailSend(false)
+                setColor('green')
+                setTimeout(() => {
+                  setCodeDone(true)
+                  setEmailSend(false)
+                }, 1000)
               } else {
                 console.log('else')
                 setApiErrorText("Something went wrong. Please try again.")
@@ -264,14 +277,12 @@ export const ForgotPass = ({navigation}) => {
     }
     setErrorCPass(false)
     let token = code.join("");
-
+    setCodeToken(token)
     let data = {
       email: email,
       password: password,
-      token: token
+      token: codeToken
     };
-
-    console.log(body)
     try {
       await axios
           .post(`${API_URL}/api/User/ResetPassword`, data)
@@ -376,6 +387,7 @@ export const ForgotPass = ({navigation}) => {
               <PassCodeInput index="4" color={color} handleNextInput={nextInput}  refs={input4}/>
             </View>
             <Text style={style.apierrorText}>{apiErrorText}</Text>
+            <Text style={style.apiDoneText}>{apiDoneText}</Text>
             <View style={style.forgotPass}>
               <TouchableWithoutFeedback onPress={resendEmail}>
                 <Text style={style.link}>Didn’t get the link</Text>
@@ -422,6 +434,9 @@ export const ForgotPass = ({navigation}) => {
                   source={require("../../../assets/images/icons/show-pass.png")}
                 />
               </TouchableWithoutFeedback>
+              {errorPass && (
+                  <Text style={style.errorText}>{passErrorText}</Text>
+              )}
             </View>
             <View style={style.formGroup}>
               {focusCPass && (
@@ -440,7 +455,7 @@ export const ForgotPass = ({navigation}) => {
                 style={style.input}
                 placeholder="Repeat password"
                 placeholderTextColor="#A4AEB4"
-                onChangeText={onChangePass}
+                onChangeText={onChangeCPass}
                 onFocus={() => {
                   setFocusCPass(true);
                   setErrorCPass(false);
@@ -459,8 +474,11 @@ export const ForgotPass = ({navigation}) => {
                   source={require("../../../assets/images/icons/show-pass.png")}
                 />
               </TouchableWithoutFeedback>
-              <Text style={style.apierrorText}>{apiErrorText}</Text>
+              {errorCPass && (
+                  <Text style={style.errorText}>{cpassErrorText}</Text>
+              )}
             </View>
+            <Text style={style.apierrorText}>{apiErrorText}</Text>
             <PrimaryBtn text="Reset Password" handlePress={changePass}/>
           </View>
         )}

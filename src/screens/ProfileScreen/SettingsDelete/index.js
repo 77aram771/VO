@@ -5,18 +5,19 @@ import {
     View,
     Image,
     TouchableOpacity,
-    TouchableWithoutFeedback, TextInput, ImageBackground
+    TouchableWithoutFeedback, TextInput, ImageBackground, AsyncStorage
 } from "react-native";
-import {windowHeight, windowWidth} from "../../../shared/Const"
+import {API_URL, windowHeight, windowWidth} from "../../../shared/Const"
 import {style} from './style'
 import {LinearGradient} from "expo-linear-gradient";
 import { BlurView } from 'expo-blur';
 import Context from "../../../../Context";
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn";
+import axios from "axios";
 
 
 
-export const SettingsDelete = () => {
+export const SettingsDelete = ({navigation}) => {
 
     const {openSettingsDelete} = useContext(Context)
     const [emailErrorText, setEmailErrorText] = useState('')
@@ -24,18 +25,16 @@ export const SettingsDelete = () => {
     const [email, setEmail] = useState('admin@vo.com')
     const [errorLogin, setErrorLogin] = useState(false)
     const [focusLogin, setFocusLogin] = useState(false)
-    const [emailError, setEmailError] = useState(false)
-    const [removed, setRemoved] = useState(true)
-    const [verify, setVerify] = useState(false)
+    const [emailError, setEmailError] = useState(true)
+    const [removed, setRemoved] = useState(false)
+    const [verify, setVerify] = useState(true)
     const [confirmDelete, setConfirmDelete] = useState(false)
+    const {user} = useContext(Context)
+    const {setLogout} = useContext(Context)
 
     const dismiseKey = () => {
         Keyboard.dismiss();
     };
-
-    const remove = () => {
-
-    }
 
     const validate = (text) => {
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -52,12 +51,77 @@ export const SettingsDelete = () => {
         }
     }
 
-    const goTologin = () => {
-
+    const verifyEmail = () => {
+        if (emailError === true) {
+            setErrorLogin(true)
+            setEmailErrorText("Incorrect Email Format")
+            return;
+        }
+        setErrorLogin(false)
+        if (!email) {
+            setErrorLogin(true)
+            setEmailErrorText("Incorrect Email Address")
+            return;
+        }
+        setErrorLogin(false)
+        if (email.toLowerCase() === user.email) {
+            setEmailError(false)
+            setApiErrorText('')
+            setVerify(false)
+            setConfirmDelete(true)
+        } else {
+            setEmailError(true)
+            setApiErrorText('You email address does not matched')
+        }
     }
 
-    const goToRegister = () => {
+    const deleteAccount = async () => {
+        try {
+            await axios
+                .delete(`${API_URL}/api/User?id=${user.id}`)
+                .then((response) => {
+                    console.log(response)
+                    if (response.data.accepted == false) {
+                        setApiErrorText(response.data.errorMessages[0])
+                        console.log(apiErrorText)
+                    } else if (response.data.accepted == true) {
+                        setRemoved(true)
+                    } else {
+                        setApiErrorText("Something went wrong. Please try again.")
+                    }
+                })
+                .catch((error) => {
+                    console.log(error.response)
+                    setApiErrorText("Something went wrong. Please try again.")
+                })
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
+    const goTologin = async () => {
+        try {
+            await AsyncStorage.removeItem('Token');
+            await AsyncStorage.removeItem('refreshToken');
+            await AsyncStorage.removeItem('user');
+            setLogout()
+        }
+        catch(exception) {
+            return false;
+        }
+    }
+
+    const goToRegister = async () => {
+        try {
+            await AsyncStorage.removeItem('Token');
+            await AsyncStorage.removeItem('refreshToken');
+            await AsyncStorage.removeItem('user');
+            setLogout()
+            navigation.navigate('RegisterScreen')
+        }
+        catch(exception) {
+            return false;
+        }
     }
 
     return (
@@ -197,7 +261,7 @@ export const SettingsDelete = () => {
                                     )}
                                 </View>
                                 <Text style={style.apierrorText}>{apiErrorText}</Text>
-                                <PrimaryBtn text="Verify" handlePress={remove}/>
+                                <PrimaryBtn text="Verify" handlePress={verifyEmail}/>
                             </View>
                         )}
                         {confirmDelete && (
@@ -224,6 +288,7 @@ export const SettingsDelete = () => {
                                         height: (windowHeight * 7 ) / 100,
                                         marginTop: (windowHeight * 40 ) / 100,
                                     }}
+                                    onPress={deleteAccount}
                                 >
                                     <LinearGradient
                                         colors={['#F40505', '#A30019']}
@@ -240,6 +305,7 @@ export const SettingsDelete = () => {
                                         color: 'white',
                                     }}>Delete Account</Text>
                                 </TouchableOpacity>
+
                             </View>
                         )}
                     </View>

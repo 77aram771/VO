@@ -177,6 +177,14 @@ export const style = StyleSheet.create({
         color: '#ff0000',
         fontSize: 14,
         marginBottom: 10,
+        textAlign: 'center'
+      },
+      apiDoneText: {
+        position: 'relative',
+        color: 'green',
+        fontSize: 14,
+        marginBottom: 10,
+        textAlign: 'center'
       },
       showPass: {
         position: 'absolute',

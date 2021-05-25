@@ -40,6 +40,15 @@ export const style = StyleSheet.create({
     width: '120%',
     height: 'auto',
   },
+  errorBlured: {
+    position: 'absolute',
+    top: '-20%',
+    left: '-10%',
+    bottom: 0,
+    right: 0,
+    width: '120%',
+    height: 'auto',
+  },
   primaryBtn: {
     position: 'relative',
     alignItems: 'center',
@@ -81,5 +90,26 @@ export const style = StyleSheet.create({
   greyText: {
     fontSize: 15,
     color: 'white'
+  },
+  errorText: {
+    position: 'absolute',
+    color: '#ff0000',
+    fontSize: 12,
+    bottom: 0,
+    right: 0,
+  },
+  apierrorText: {
+    position: 'relative',
+    textAlign: 'center',
+    color: '#ff0000',
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  apidoneText: {
+    position: 'relative',
+    textAlign: 'center',
+    color: 'green',
+    fontSize: 14,
+    marginBottom: 10,
   },
 })

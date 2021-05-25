@@ -16,9 +16,45 @@ import exploreIcon from '../assets/icon/icon-explore.png'
 import videoAddIcon from '../assets/icon/icon-add.png'
 import communityIcon from '../assets/icon/icon-community.png'
 import profileIcon from '../assets/icon/icon-profile.png'
-import {windowHeight} from "../shared/Const"
+import {API_URL, windowHeight} from "../shared/Const"
 import Context from "../../Context"
 import {AsyncStorage} from 'react-native'
+import axios from "axios";
+
+axios.interceptors.request.use(
+    async (config) => {
+        const token = await AsyncStorage.getItem('Token')
+        if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+axios.interceptors.response.use((response) => {
+    return response;
+},  (err) => {
+    return new Promise(async (resolve, reject) => {
+        const originalReq = err.config;
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIyZGEwOGM3OS0yZmRmLTQzZTMtOTNhNy1hMTlkZThlNzZmY2MiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0aWsuaGFrb2JpYW5AZ21haWwuY29tIiwiZXhwIjoxNjIxOTQ3ODUyLCJpc3MiOiJpc3N1ZXIiLCJhdWQiOiJhdWRpZW5jZSJ9.Df4BTcvB1zKLoJLn1rtg692Qm1kv1U0dXY0aD3nf-Bg'
+        const refreshToken = 'MmRhMDhjNzktMmZkZi00M2UzLTkzYTctYTE5ZGU4ZTc2ZmNjdGlrLmhha29iaWFuZFZBOFNNanFlaWFLL3FNV1ArWFVtVTlPQUpNNGQ3T21HMmx0Vks1dCttWT0='
+        if (err.response.status === 401) {
+            await axios.post(`${API_URL}/api/Account/RefreshAccessToken?AccessToken=${token}&RefreshToken=${refreshToken}`)
+                .then( async (response) => {
+                    await AsyncStorage.setItem('Token', response.data.data[0].accessToken)
+                    await AsyncStorage.setItem('refreshToken', response.data.data[0].refreshToken)
+                    err.config.headers["Authorization"] = `Bearer ${response.data.data[0].accessToken}`;
+                    return axios(err.config);
+                });
+            return axios(err.config);
+        } else {
+            return Promise.reject(err);
+        }
+    });
+});
 
 const RootNavigation = () => {
 
@@ -39,6 +75,7 @@ const RootNavigation = () => {
     const [settingsEmailModalVisible, setSettingsEmailModalVisible] = useState(false)
     const [settingsAboutModalVisible, setSettingsAboutModalVisible] = useState(false)
     const [settingsDeleteModalVisible, setSettingsDeleteModalVisible] = useState(false)
+    const [cameraPopupModalVisible, setCameraPopupModalVisible] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -49,14 +86,19 @@ const RootNavigation = () => {
 
     const getUserInfo = async () => {
         const token = await AsyncStorage.getItem('Token')
-        console.log(token)
+        // console.log(token)
         if(token) {
             const userInfo = await AsyncStorage.getItem('user')
             setUser(JSON.parse(userInfo))
-            setLogIn()
-            console.log(userInfo)
+            setLogIn(true)
+            // console.log(userInfo)
         }
 
+    }
+
+    const setUserInfo = (data) => {
+        // console.log('data-', data)
+        setUser(data)
     }
 
     const setLogin = () => {
@@ -64,6 +106,7 @@ const RootNavigation = () => {
     }
 
     const setLogout = () => {
+        setSettingsModalVisible(!settingsModalVisible)
         setLogIn(false)
     }
 
@@ -85,6 +128,9 @@ const RootNavigation = () => {
     const openMyVideos = () => {
         // alert('test')
         setPopupModalVisible(!popupModalVisible)
+        if (profModalVisible) {
+            setProfModalVisible(!profModalVisible)
+        }
         setMyVideosModalVisible(!myVideosModalVisible)
     }
     const openWatchedVideos = () => {
@@ -147,6 +193,10 @@ const RootNavigation = () => {
         setSettingsDeleteModalVisible(!settingsDeleteModalVisible)
     }
 
+    const openCameraPopup = () => {
+        setCameraPopupModalVisible(!cameraPopupModalVisible)
+    }
+
     const Tab = createBottomTabNavigator()
 
     return (
@@ -167,8 +217,10 @@ const RootNavigation = () => {
             settingsEmailModalVisible: settingsEmailModalVisible,
             settingsAboutModalVisible: settingsAboutModalVisible,
             settingsDeleteModalVisible: settingsDeleteModalVisible,
+            cameraPopupModalVisible: cameraPopupModalVisible,
             setLogin:() => setLogin(),
             setLogout:() => setLogout(),
+            setUserInfo:(data) => setUserInfo(data),
             openNotifications:() =>  openNotifications(),
             goToEditProfile:() =>  goToEditProfile(),
             openMore:() =>  openMore(),
@@ -182,7 +234,8 @@ const RootNavigation = () => {
             openSettingsPassword:() => openSettingsPassword(),
             openSettingsEmail:() => openSettingsEmail(),
             openSettingsAbout:() => openSettingsAbout(),
-            openSettingsDelete:() => openSettingsDelete()
+            openSettingsDelete:() => openSettingsDelete(),
+            openCameraPopup:() => openCameraPopup()
         }}>
 
         <NavigationContainer>
