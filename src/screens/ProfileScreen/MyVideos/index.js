@@ -480,7 +480,7 @@ export const MyVideos = ({navigation}) => {
                                 width: (windowWidth * 40 ) / 100 - 10,
                                 height: 90,
                             }}
-                            source={{uri: selectedItem.image}}
+                            source={require('../../../assets/images/notification-video-img.png')}
                         />
                         <View style={style.duration}>
                             <Text style={style.text}>{selectedItem.duration}</Text>
@@ -511,7 +511,7 @@ export const MyVideos = ({navigation}) => {
                                     borderRadius: 100,
                                     marginRight: 10
                                 }}
-                                source={{uri: selectedItem.profile}}
+                                source={require('../../../assets/images/notification-pick.png')}
                             />
                             <Text style={style.author}>{selectedItem.author}</Text>
                             <View style={style.dot}></View>

@@ -54,7 +54,7 @@ export const WatchedVideo = (props) =>  {
                             <Image
                                 resizeMode="contain"
                                 style={style.image}
-                                source={{uri: props.item.image}}
+                                source={require('../../../assets/images/notification-video-img.png')}
                             />
                             <View style={style.duration}>
                                 <Text style={style.text}>{props.item.duration}</Text>
@@ -67,7 +67,7 @@ export const WatchedVideo = (props) =>  {
                                 <Image
                                     resizeMode="contain"
                                     style={style.profile}
-                                    source={{uri: props.item.profile}}
+                                    source={require('../../../assets/images/notification-pick.png')}
                                 />
                                 <Text style={style.author}>{props.item.author}</Text>
                                 <View style={style.dot}></View>

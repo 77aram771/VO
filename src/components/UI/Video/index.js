@@ -70,8 +70,8 @@ export const Video = (props) => {
                   width: windowWidth,
                   height: windowHeight / 4,
                 }}
-                source={{ uri: props.item.image }}
-              ></Image> 
+                source={require('../../../assets/images/video-image.png')}
+              />
               <View
                 style={{
                   position: 'absolute',

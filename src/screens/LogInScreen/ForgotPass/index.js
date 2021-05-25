@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import {API_URL, windowHeight} from "../../../shared/Const";
+import {API_URL, windowHeight, windowWidth} from "../../../shared/Const";
 import { style } from "./style";
 import { PassCodeInput } from "../../../components/UI/PassCodeInput";
 import { PrimaryBtn } from "../../../components/UI/PrimaryBtn";
@@ -239,6 +239,9 @@ export const ForgotPass = ({navigation}) => {
       }
     }
   }
+  const goBack = () => {
+    navigation.goBack()
+  }
   const changePass = async () => {
     if (!password) {
       setErrorPassword(true)
@@ -325,7 +328,33 @@ export const ForgotPass = ({navigation}) => {
           style={style.background}
           source={require("../../../assets/images/backgrounds/forgotpass-back.png")}
         />
+        <View
+            style={{
+              width: windowWidth,
+              position: 'absolute',
+              paddingLeft: 10,
+              height: (windowHeight * 10) / 100,
+              top: (windowHeight * 7) / 100,
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start'
+            }}
+        >
+          <TouchableOpacity onPress={goBack}
+                            style={{
+                              alignItems: 'center',
+                            }}
+          >
+            <Image
+                source={require('../../../assets/images/icons/back.png')}
+                resizeMode="contain"
+                style={{
+                  width: (windowWidth * 10) / 100,
+                  height: 20,
+                }}
+            />
 
+          </TouchableOpacity>
+        </View>
         {resetpass && (
           <View style={style.form}>
             <Text style={style.title}>Forgot your password?</Text>

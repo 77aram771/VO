@@ -1128,7 +1128,7 @@ export const EditProfile = ({navigation}) => {
                         >About</Text>
                         <TextInput
                             class="textarea"
-                            placeholder="Name"
+                            placeholder="About me..."
                             placeholderTextColor="#A4AEB4"
                             numberOfLines="4"
                             value={about}

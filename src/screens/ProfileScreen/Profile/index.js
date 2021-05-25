@@ -25,6 +25,7 @@ import {LikedVideos} from "../LikedVideos";
 import {Settings} from "../Settings";
 import axios from "axios";
 import Camera from "expo-camera/src/Camera";
+import video_img from '../../../assets/images/notification-video-img.png'
 
 
 const DATA = [
@@ -38,8 +39,7 @@ const DATA = [
         name: "Stranger Things",
         description:
             "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl.",
-        image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/video-image.png",
+        image: video_img
     },
     {
         id: "2",
@@ -51,8 +51,7 @@ const DATA = [
         name: "Stranger Things",
         description:
             "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl.",
-        image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/video-image.png",
+        image: video_img
     },
     {
         id: "3",
@@ -64,8 +63,7 @@ const DATA = [
         name: "Stranger Things",
         description:
             "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl.",
-        image:
-            "file:///Users/tikhak/Vecto%20Projects/VO/mobile-ui/assets/images/video-image.png",
+        image: video_img
     },
 ];
 
@@ -92,6 +90,7 @@ export const Profile = ({navigation}) => {
     useEffect(() => {
         (async () => {
             getUser()
+            console.log('user-', user)
         })();
 
     }, []);
