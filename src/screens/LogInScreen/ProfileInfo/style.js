@@ -160,6 +160,7 @@ export const style = StyleSheet.create({
   },
   apierrorText: {
     position: 'relative',
+    textAlign: 'center',
     color: '#ff0000',
     fontSize: 14,
     marginBottom: 10,

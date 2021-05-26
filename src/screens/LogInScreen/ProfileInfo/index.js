@@ -42,7 +42,9 @@ for (var i = 1; i <= 31; i++) {
 }
 
 var array2 = [];
-for (var i = 1900; i <= new Date().getFullYear(); i++) {
+let thisYear = new Date().getFullYear()
+let neededYear = thisYear - 4
+for (var i = 1900; i <= neededYear; i++) {
   array2.push({ value: "" + i + "", text: "" + i + "" });
 }
 
@@ -59,7 +61,7 @@ export const ProfileInfo = (props) => {
     const [gender, setGender] = useState('male')
     const [selectedMount, setSelectedMount] = useState("0" + new Date().getMonth() + "")
     const [selectedDay, setSelectedDay] = useState("0" + new Date().getDay() + "")
-    const [selectedYear, setSelectedYear] = useState("" + new Date().getFullYear() + "")
+    const [selectedYear, setSelectedYear] = useState("" + neededYear + "")
     const [days, setDays] = useState(array)
     const [years, setYears] = useState(array2)
     const [bday, setBday] = useState(selectedYear + "-" + selectedMount + "-" + selectedDay)
@@ -146,7 +148,9 @@ export const ProfileInfo = (props) => {
     const selectFemale = () => {
         setGender('female')
     };
-
+    const goBack = () => {
+        navigation.goBack()
+    }
     const register = async () => {
         if (!fname) {
             setErrorFName(true)
@@ -170,7 +174,8 @@ export const ProfileInfo = (props) => {
             firstName: fname,
             lastName: lname,
             gender: gender,
-            birthDate: bday,
+            dateOfBirth: bday,
+            description: 'string',
             device: {
                 deviceId: 'string',
                 deviceType: 1,
@@ -182,9 +187,13 @@ export const ProfileInfo = (props) => {
         };
         try {
             await axios
-                .post(`${API_URL}/api/Account/SignUp`, data)
+                .post(`${API_URL}/api/Account/SignUp`, data, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
                 .then((response) => {
-                    console.log('res-', response)
+                    console.log('res-', response.data)
                     if (response.data.accepted == false) {
                         setApiErrorText(response.data.errorMessages[0])
                     } else if (response.data.accepted == true) {
@@ -221,6 +230,33 @@ export const ProfileInfo = (props) => {
                 style={style.background}
                 source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
                 />
+                <View
+                    style={{
+                        width: windowWidth,
+                        position: 'absolute',
+                        paddingLeft: 10,
+                        height: (windowHeight * 10) / 100,
+                        top: (windowHeight * 7) / 100,
+                        alignItems: 'flex-start',
+                        justifyContent: 'flex-start'
+                    }}
+                >
+                    <TouchableOpacity onPress={goBack}
+                                      style={{
+                                          alignItems: 'center',
+                                      }}
+                    >
+                        <Image
+                            source={require('../../../assets/images/icons/back.png')}
+                            resizeMode="contain"
+                            style={{
+                                width: (windowWidth * 10) / 100,
+                                height: 20,
+                            }}
+                        />
+
+                    </TouchableOpacity>
+                </View>
                 <View style={style.form}>
                 <Text style={style.title}>Your Name</Text>
                 <View style={style.formGroup}>
@@ -415,7 +451,6 @@ export const ProfileInfo = (props) => {
                     )}
                 </View>
                 <Text style={style.apierrorText}>{ apiErrorText }</Text>
-                
                 <PrimaryBtn text="Next" handlePress={register}/>
                 </View>
             </View>

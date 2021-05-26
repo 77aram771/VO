@@ -336,7 +336,7 @@ export const Notifications = ({navigation}) => {
                                             borderColor: "#5D5D67",
                                             borderRadius: 100,
                                         }}
-                                    ></Image>
+                                    />
                                 </View>
                                 <View
                                     style={{
@@ -382,7 +382,7 @@ export const Notifications = ({navigation}) => {
                                             height: 40,
                                         }}
                                         source={require('../../../assets/images/notification-video-img.png')}
-                                    ></Image>
+                                    />
                                 </View>
                             </TouchableOpacity>
                         )}

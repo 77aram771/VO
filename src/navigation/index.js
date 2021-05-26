@@ -39,8 +39,9 @@ axios.interceptors.response.use((response) => {
 },  (err) => {
     return new Promise(async (resolve, reject) => {
         const originalReq = err.config;
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIyZGEwOGM3OS0yZmRmLTQzZTMtOTNhNy1hMTlkZThlNzZmY2MiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0aWsuaGFrb2JpYW5AZ21haWwuY29tIiwiZXhwIjoxNjIxOTQ3ODUyLCJpc3MiOiJpc3N1ZXIiLCJhdWQiOiJhdWRpZW5jZSJ9.Df4BTcvB1zKLoJLn1rtg692Qm1kv1U0dXY0aD3nf-Bg'
-        const refreshToken = 'MmRhMDhjNzktMmZkZi00M2UzLTkzYTctYTE5ZGU4ZTc2ZmNjdGlrLmhha29iaWFuZFZBOFNNanFlaWFLL3FNV1ArWFVtVTlPQUpNNGQ3T21HMmx0Vks1dCttWT0='
+        console.log(err.response)
+        const token = await AsyncStorage.getItem('Token')
+        const refreshToken = await AsyncStorage.getItem('refreshToken')
         if (err.response.status === 401) {
             await axios.post(`${API_URL}/api/Account/RefreshAccessToken?AccessToken=${token}&RefreshToken=${refreshToken}`)
                 .then( async (response) => {

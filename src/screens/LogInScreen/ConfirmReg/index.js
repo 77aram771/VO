@@ -1,10 +1,10 @@
 import React, {useRef, useState} from "react"
-import {Keyboard, Text, View, Image, TouchableWithoutFeedback} from "react-native"
+import {Keyboard, Text, View, Image, TouchableWithoutFeedback, TouchableOpacity} from "react-native"
 import {style} from './style'
 import {PassCodeInput} from "../../../components/UI/PassCodeInput"
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn"
 import axios from "axios";
-import {API_URL} from "../../../shared/Const";
+import {API_URL, windowHeight, windowWidth} from "../../../shared/Const";
 
 export const ConfirmReg = (props) => {
 
@@ -78,6 +78,10 @@ export const ConfirmReg = (props) => {
         focusInput(index)
     }
 
+    const goToLogin = () => {
+        navigation.navigate("LoginScreen")
+    }
+
     const focusInput = async (index) => {
         if (index == 1) {
             input2.current.focus();
@@ -144,6 +148,33 @@ export const ConfirmReg = (props) => {
                     style={style.background}
                     source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
                 />
+                <View
+                    style={{
+                        width: windowWidth,
+                        position: 'absolute',
+                        paddingLeft: 10,
+                        height: (windowHeight * 10) / 100,
+                        top: (windowHeight * 7) / 100,
+                        alignItems: 'flex-start',
+                        justifyContent: 'flex-start'
+                    }}
+                >
+                    <TouchableOpacity onPress={goBack}
+                                      style={{
+                                          alignItems: 'center',
+                                      }}
+                    >
+                        <Image
+                            source={require('../../../assets/images/icons/back.png')}
+                            resizeMode="contain"
+                            style={{
+                                width: (windowWidth * 10) / 100,
+                                height: 20,
+                            }}
+                        />
+
+                    </TouchableOpacity>
+                </View>
                 <View style={style.form}>
                     <Text style={style.title}>Enter Confirmation Code</Text>
                     <Text style={style.text}>Enter the confirmation code we sent to</Text>

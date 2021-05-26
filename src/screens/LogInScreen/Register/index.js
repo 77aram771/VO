@@ -7,14 +7,14 @@ import {
     Image,
     TextInput,
     TouchableWithoutFeedback,
-    AsyncStorage
+    AsyncStorage, TouchableOpacity
 } from "react-native"
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn"
 import {ExternalLogin} from "../../../components/ExternalLogin"
 // import {CheckBox} from " ../../../components/UI/CheckBox"
 import {style} from './style'
 import axios from "axios";
-import {API_URL, FB_APP_ID, IOS_GOOGLE_ID} from "../../../shared/Const";
+import {API_URL, FB_APP_ID, IOS_GOOGLE_ID, windowHeight, windowWidth} from "../../../shared/Const";
 import * as Facebook from "expo-facebook";
 import * as Google from "expo-google-app-auth";
 import * as AppleAuthentication from "expo-apple-authentication";
@@ -202,7 +202,9 @@ export const Register = ({navigation}) => {
                 setApiErrorText("Something went wrong. Please try again.")
             })
     }
-
+    const goBack = () => {
+        navigation.goBack()
+    }
     const externalLogin = (type) => {
         if (type === 'facebook') {
             fbSignIn()
@@ -614,6 +616,33 @@ export const Register = ({navigation}) => {
                     style={style.background}
                     source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
                 />
+                <View
+                    style={{
+                        width: windowWidth,
+                        position: 'absolute',
+                        paddingLeft: 10,
+                        height: (windowHeight * 10) / 100,
+                        top: (windowHeight * 7) / 100,
+                        alignItems: 'flex-start',
+                        justifyContent: 'flex-start'
+                    }}
+                >
+                    <TouchableOpacity onPress={goBack}
+                                      style={{
+                                          alignItems: 'center',
+                                      }}
+                    >
+                        <Image
+                            source={require('../../../assets/images/icons/back.png')}
+                            resizeMode="contain"
+                            style={{
+                                width: (windowWidth * 10) / 100,
+                                height: 20,
+                            }}
+                        />
+
+                    </TouchableOpacity>
+                </View>
                 <View style={style.form}>
                     <Text style={style.title}>Register</Text>
                     <View style={style.formGroup}>
