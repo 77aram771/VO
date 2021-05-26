@@ -367,7 +367,7 @@ export default class VideoPlayer extends Component {
     }
 
     _onFullscreenPressed = async () => {
-        this.props.changeFullScree()
+        this.props.handleFullScreen()
         this.handleShowFullScreenBottomButton(false)
         if (!this.props.changeFullScreen) {
             await this.changeScreenOrientation()
@@ -503,7 +503,14 @@ export default class VideoPlayer extends Component {
             changeFullScreen,
             handleChangeFollow,
             changeFollow,
-            handleChangeSelectRadio
+            handleChangeSelectRadio,
+            handleCloseSubModalFullScreen,
+            subModalVisibleFullScreen,
+            changeSubModalFullScreen,
+            handleChangeSectionModalFullScreen,
+            sectionIdFullScreen,
+            handleChangeSelectFullScreen,
+            handleChangeSelectRadioFullScreen
         } = this.props
 
         const multiplier = changeFullScreen ? 0.5 : 1.10
@@ -529,7 +536,7 @@ export default class VideoPlayer extends Component {
                     visible={subModalVisible}
                 >
                     <View style={{
-                        width: '100%',
+                        width: windowWidth,
                         minHeight: windowHeight / 3.5,
                         borderTopRightRadius: 20,
                         borderTopLeftRadius: 20,
@@ -641,9 +648,9 @@ export default class VideoPlayer extends Component {
                                                         key={item.id}
                                                         style={{
                                                             width: windowWidth / 1.25,
-                                                            height: 40,
-                                                            marginTop: 10,
-                                                            marginBottom: 10,
+                                                            height: changeFullScreen ? 20 : 40,
+                                                            marginTop: changeFullScreen ? 5 : 10,
+                                                            marginBottom: changeFullScreen ? 5 : 10,
                                                             justifyContent: 'flex-start',
                                                             alignItems: 'center',
                                                             flexDirection: 'row',
@@ -715,6 +722,166 @@ export default class VideoPlayer extends Component {
                                             </Text>
                                         </TouchableOpacity>
                                     </>
+                                )
+                                : null
+                        }
+                    </View>
+                </ModalWrapper>
+                <ModalWrapper
+                    containerStyle={{flexDirection: 'row', alignItems: 'flex-end'}}
+                    onRequestClose={() => handleCloseSubModalFullScreen(false)}
+                    supportedOrientations={['portrait', 'landscape']}
+                    style={{
+                        flex: 1,
+                        borderTopRightRadius: 18,
+                        borderTopLeftRadius: 18,
+                        backgroundColor: '#161827',
+                    }}
+                    visible={subModalVisibleFullScreen}
+                >
+                    <View
+                        style={{
+                            width: '100%',
+                            minHeight: windowHeight / 3.5,
+                            borderTopRightRadius: 20,
+                            borderTopLeftRadius: 20,
+                            paddingTop: 10,
+                            paddingLeft: 40,
+                            paddingRight: 10,
+                            paddingBottom: 30,
+                            justifyContent: 'flex-start',
+                            alignItems: 'flex-start',
+                        }}
+                    >
+                        {
+                            sectionIdFullScreen === 3
+                                ? (
+                                    subModalData[sectionIdFullScreen].items.map(item => {
+                                        return (
+                                            <View key={item.id}>
+                                                <TouchableOpacity
+                                                    key={item.id}
+                                                    style={{
+                                                        width: windowWidth * 2,
+                                                        height: 25,
+                                                        marginTop: 5,
+                                                        marginBottom: 5,
+                                                        justifyContent: 'flex-start',
+                                                        alignItems: 'center',
+                                                        flexDirection: 'row',
+                                                        borderBottomStyle: 'solid',
+                                                        borderBottomColor: '#22242C',
+                                                        borderBottomWidth: 1
+                                                    }}
+                                                    onPress={() => handleChangeSelectRadioFullScreen(item.id)}
+                                                >
+                                                    <View style={{width: 10}}>
+                                                        {
+                                                            !item.bool
+                                                                ? (
+                                                                    <Image source={ICON_RADIO.module}/>
+                                                                )
+                                                                : <Image source={ICON_RADIO_CHECK.module}/>
+                                                        }
+                                                    </View>
+                                                    <Text
+                                                        style={{
+                                                            marginLeft: 40,
+                                                            fontSize: 16,
+                                                            color: '#A2ACB2',
+                                                        }}
+                                                    >
+                                                        {item.item}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )
+                                    })
+                                )
+                                : subModalData[sectionIdFullScreen].items.map(item => {
+                                    return (
+                                        <View key={item.id}>
+                                            <TouchableOpacity
+                                                key={item.id}
+                                                style={{
+                                                    width: windowWidth * 2,
+                                                    height: 30,
+                                                    marginTop: 10,
+                                                    marginBottom: 10,
+                                                    justifyContent: 'flex-start',
+                                                    alignItems: 'center',
+                                                    flexDirection: 'row',
+                                                    borderBottomStyle: 'solid',
+                                                    borderBottomColor: '#22242C',
+                                                    borderBottomWidth: 1
+                                                }}
+                                                onPress={() => handleChangeSelectFullScreen(item.id)}
+                                            >
+                                                <View style={{width: 10}}>
+                                                    {
+                                                        item.bool
+                                                            ? <Image source={ICON_CHECK.module}/>
+                                                            : null
+                                                    }
+                                                </View>
+                                                <Text
+                                                    style={{
+                                                        marginLeft: 40,
+                                                        fontSize: 16,
+                                                        color: '#A2ACB2',
+                                                    }}
+                                                >
+                                                    {item.item}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                })
+                        }
+                        {
+                            sectionIdFullScreen === 3
+                                ? (
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'flex-start',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            style={{
+                                                width: 185,
+                                                height: 36,
+                                                marginTop: 25,
+                                                marginBottom: 25,
+                                                borderRadius: 25
+                                            }}
+                                        >
+                                            <LinearGradient
+                                                colors={['#2727F5', '#001671']}
+                                                style={{flex: 1, borderRadius: 25}}
+                                                start={{x: 0, y: 0}}
+                                                end={{x: 1, y: 0}}
+                                            >
+
+                                                <Text style={styles.buttonText}>
+                                                    Report
+                                                </Text>
+                                            </LinearGradient>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={{
+                                                width: 185,
+                                                height: 36,
+                                                marginBottom: 10
+                                            }}
+                                            onPress={() => handleCloseSubModalFullScreen(false)}
+                                        >
+                                            <Text style={styles.buttonText}>
+                                                Cancel
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 )
                                 : null
                         }
@@ -978,8 +1145,9 @@ export default class VideoPlayer extends Component {
                                                     onPress={
                                                         changeFullScreen
                                                             ? () => this.handleShowFullScreenBottomButton(!this.state.showFullScreenBottomButtons)
-                                                            : () => handleCloseSubModal()
+                                                            : () => openSubModal()
                                                     }
+                                                    // onPress={() => handleCloseSubModal()}
                                                 >
                                                     <Image style={styles.button} source={ICON_MENU_HORIZONTAL.module}/>
                                                 </TouchableOpacity>
@@ -1054,11 +1222,7 @@ export default class VideoPlayer extends Component {
                                                         )
                                                         : (
                                                             <TouchableOpacity
-                                                                style={[styles.wrapper,
-                                                                    {
-                                                                        marginLeft: windowWidth / 2
-                                                                    }
-                                                                ]}
+                                                                style={[styles.wrapper, {marginLeft: windowWidth / 2}]}
                                                                 onPress={() => this.skip(true)}
                                                                 disabled={this.state.isLoading}
                                                             >
@@ -1067,7 +1231,6 @@ export default class VideoPlayer extends Component {
                                                             </TouchableOpacity>
                                                         )
                                                 }
-
                                             </View>
                                         </>
                                     )
@@ -1256,7 +1419,7 @@ export default class VideoPlayer extends Component {
                                                                         paddingHorizontal: 10,
                                                                         paddingVertical: 3,
                                                                     }}
-                                                                    onPress={() => handleChangeSectionModal(index)}
+                                                                    onPress={() => handleChangeSectionModalFullScreen(index)}
                                                                 >
                                                                     <Image source={item.icon2.module}/>
                                                                     <Text
@@ -1667,6 +1830,7 @@ export default class VideoPlayer extends Component {
                                                     placeholder="Add Comment"
                                                     keyboardType="twitter"
                                                     placeholderTextColor={'#fff'}
+                                                    multiline={true}
                                                 />
                                             </View>
                                             <LinearGradient
@@ -1677,7 +1841,7 @@ export default class VideoPlayer extends Component {
                                                     justifyContent: 'center',
                                                     alignItems: 'center',
                                                     borderRadius: 15,
-                                                    padding: 4
+                                                    padding: 4,
                                                 }}
                                                 start={{x: 0, y: 0}}
                                                 end={{x: 1, y: 0}}

@@ -16,9 +16,12 @@ export function HomeScreen({navigation}) {
     const [modalVisible, setModalVisible] = useState(false)
     const [subModalData, setSubModalData] = useState(videoSubModalObject)
     const [subModalVisible, setSubModalVisible] = useState(false)
+    const [subModalVisibleFullScreen, setSubModalVisibleFullScreen] = useState(false)
     const [changeModal, setChangeModal] = useState(false)
     const [changeSubModal, setChangeSubModal] = useState(false)
+    const [changeSubModalFullScreen, setChangeSubModalFullScreen] = useState(false)
     const [sectionId, setSectionId] = useState(null)
+    const [sectionIdFullScreen, setSectionIdFullScreen] = useState(0)
     const [changeFollow, setChangeFollow] = useState(null)
     const {notModalVisible} = useContext(Context)
 
@@ -45,11 +48,9 @@ export function HomeScreen({navigation}) {
 
     const handleChangeModal = () => {
         setChangeModal(!changeModal)
-        console.log('changeModal', changeModal)
     }
 
     const handleOpenSubModal = () => {
-        console.log('sub Modal open')
         setSubModalVisible(true)
     }
 
@@ -57,7 +58,24 @@ export function HomeScreen({navigation}) {
         setChangeSubModal(false)
         setSubModalVisible(!subModalVisible)
         setSectionId(null)
+    }
+    const handleOpenSubModalFullScreen = () => {
+        setSubModalVisibleFullScreen(true)
+    }
 
+    const handleCloseSubModalFullScreen = (bool) => {
+        setChangeSubModalFullScreen(false)
+        setSubModalVisibleFullScreen(bool)
+        // setSectionIdFullScreen(0)
+    }
+
+    const handleChangeSectionModalFullScreen = (id) => {
+        setSubModalVisibleFullScreen(true)
+        setSectionIdFullScreen(id)
+        setTimeout(() => {
+            console.log('id', id)
+            setChangeSubModalFullScreen(!changeSubModalFullScreen)
+        }, 300)
     }
 
     const handleChangeSectionModal = (id) => {
@@ -71,7 +89,6 @@ export function HomeScreen({navigation}) {
     const handleChangeSelect = (id) => {
         setChangeSubModal(!changeSubModal)
         let newObj = subModalData[sectionId].items.map(item => {
-            console.log('item', item)
             item.bool = false
             if (item.id === id) {
                 item.bool = !item.bool
@@ -79,31 +96,55 @@ export function HomeScreen({navigation}) {
             return item
         })
         // setSubModalData(newObj)
-        setSectionId(null)
+        // setSectionIdFullScreen(0)
+        console.log('newObj', newObj)
+    }
+
+    const handleChangeSelectFullScreen = (id) => {
+        setChangeSubModalFullScreen(!changeSubModalFullScreen)
+        let newObj = subModalData[sectionIdFullScreen].items.map(item => {
+            item.bool = false
+            if (item.id === id) {
+                item.bool = !item.bool
+            }
+            return item
+        })
+        // setSubModalData(newObj)
+        // setSectionIdFullScreen(0)
         console.log('newObj', newObj)
     }
 
     const handleChangeSelectRadio = (id) => {
-        subModalData[sectionId].items.map(item => {
+        // setChangeSubModal(!changeSubModal)
+        let newObj = subModalData[sectionId].items.map(item => {
+            item.bool = false
             if (item.id === id) {
                 item.bool = !item.bool
             }
-            // else {
-            //     item.bool = false
-            // }
             return item
         })
-        // setSectionId(null)
+        // setSubModalData(newObj)
+        // setSectionIdFullScreen(0)
+        console.log('newObj', newObj)
     }
 
-    const handleFullScreen = () => {
-        setChangeFullScreen(!changeFullScreen)
-        console.log('changeFullScreen', changeFullScreen)
+    const handleChangeSelectRadioFullScreen = (id) => {
+        setChangeSubModalFullScreen(!changeSubModalFullScreen)
+        let newObj = subModalData[sectionIdFullScreen].items.map(item => {
+            item.bool = false
+            if (item.id === id) {
+                item.bool = !item.bool
+            }
+            return item
+        })
+        // setSubModalData(newObj)
+        // setSectionIdFullScreen(0)
+        console.log('newObj', newObj)
     }
 
-    const handleChangeFollow = () => {
-        setChangeFollow(!changeFollow)
-    }
+    const handleFullScreen = () => setChangeFullScreen(!changeFullScreen)
+
+    const handleChangeFollow = () => setChangeFollow(!changeFollow)
 
     return (
         <>
@@ -115,17 +156,21 @@ export function HomeScreen({navigation}) {
                 supportedOrientations={['portrait', 'landscape']}
                 presentationStyle="overFullScreen"
             >
-                <View style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}>
-                    <View style={{
-                        backgroundColor: 'white',
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: 'center',
                         alignItems: 'center',
-                        width: '100%',
-                        height: '100%'
-                    }}>
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: 'white',
+                            alignItems: 'center',
+                            width: '100%',
+                            height: '100%'
+                        }}
+                    >
                         <Notifications/>
                     </View>
                 </View>
@@ -138,55 +183,102 @@ export function HomeScreen({navigation}) {
                 shouldAnimateOnRequestClose={true}
                 showOverlay={false}
                 visible={modalVisible}
-            >
-                <GestureRecognizer
-                    // onSwipe={(direction, state) => onSwipe(direction, state)}
-                    onSwipeUp={(state) => onSwipeUp(state)}
-                    onSwipeDown={(state) => onSwipeDown(state)}
-                    // onSwipeLeft={(state) => onSwipeLeft(state)}
-                    // onSwipeRight={(state) => onSwipeRight(state)}
-                    config={config}
-                    style={changeModal
-                        ? {
-                            alignSelf: 'flex-end',
-                            height: windowHeight / 10,
-                            backgroundColor: '#000',
-                        }
-                        : {
-                            backgroundColor: '#000',
-                        }
+                style={changeModal
+                    ? {
+                        alignSelf: 'flex-end',
+                        height: windowHeight / 10,
+                        backgroundColor: '#000',
                     }
-                >
-                    <View style={[styles.centeredView]}>
-                        <View
-                            style={[
-                                styles.modalView,
-                                {
-                                    height: changeModal ? windowHeight / 10 : '100%',
-                                }
-                            ]}
-                        >
-                            <VideoPlayer
-                                changeModalTrigger={changeModal}
-                                subModalVisible={subModalVisible}
-                                sectionId={sectionId}
-                                subModalData={subModalData}
-                                changeSubModal={changeSubModal}
-                                changeFullScreen={changeFullScreen}
-                                changeFollow={changeFollow}
-                                closeModal={handleCloseModal}
-                                openSubModal={handleOpenSubModal}
-                                changeModal={handleChangeModal}
-                                changeFullScree={handleFullScreen}
-                                handleCloseSubModal={handleCloseSubModal}
-                                handleChangeSelect={handleChangeSelect}
-                                handleChangeSectionModal={handleChangeSectionModal}
-                                handleChangeFollow={handleChangeFollow}
-                                handleChangeSelectRadio={handleChangeSelectRadio}
-                            />
-                        </View>
+                    : {
+                        backgroundColor: '#000',
+                    }
+                }
+            >
+                {/*<GestureRecognizer*/}
+                {/*    // onSwipe={(direction, state) => onSwipe(direction, state)}*/}
+                {/*    onSwipeUp={(state) => onSwipeUp(state)}*/}
+                {/*    onSwipeDown={(state) => onSwipeDown(state)}*/}
+                {/*    // onSwipeLeft={(state) => onSwipeLeft(state)}*/}
+                {/*    // onSwipeRight={(state) => onSwipeRight(state)}*/}
+                {/*    config={config}*/}
+                {/*    style={changeModal*/}
+                {/*        ? {*/}
+                {/*            alignSelf: 'flex-end',*/}
+                {/*            height: windowHeight / 10,*/}
+                {/*            backgroundColor: '#000',*/}
+                {/*        }*/}
+                {/*        : {*/}
+                {/*            backgroundColor: '#000',*/}
+                {/*        }*/}
+                {/*    }*/}
+                {/*>*/}
+                {/*    <View style={[styles.centeredView]}>*/}
+                {/*        <View*/}
+                {/*            style={[*/}
+                {/*                styles.modalView,*/}
+                {/*                {*/}
+                {/*                    height: changeModal ? windowHeight / 10 : '100%',*/}
+                {/*                }*/}
+                {/*            ]}*/}
+                {/*        >*/}
+                {/*            <VideoPlayer*/}
+                {/*                changeModalTrigger={changeModal}*/}
+                {/*                subModalVisible={subModalVisible}*/}
+                {/*                sectionId={sectionId}*/}
+                {/*                subModalData={subModalData}*/}
+                {/*                changeSubModal={changeSubModal}*/}
+                {/*                changeFullScreen={changeFullScreen}*/}
+                {/*                changeFollow={changeFollow}*/}
+                {/*                closeModal={handleCloseModal}*/}
+                {/*                openSubModal={handleOpenSubModal}*/}
+                {/*                changeModal={handleChangeModal}*/}
+                {/*                changeFullScree={handleFullScreen}*/}
+                {/*                handleCloseSubModal={handleCloseSubModal}*/}
+                {/*                handleChangeSelect={handleChangeSelect}*/}
+                {/*                handleChangeSectionModal={handleChangeSectionModal}*/}
+                {/*                handleChangeFollow={handleChangeFollow}*/}
+                {/*                handleChangeSelectRadio={handleChangeSelectRadio}*/}
+                {/*            />*/}
+                {/*        </View>*/}
+                {/*    </View>*/}
+                {/*</GestureRecognizer>*/}
+                <View style={[styles.centeredView]}>
+                    <View
+                        style={[
+                            styles.modalView,
+                            {
+                                height: changeModal ? windowHeight / 10 : '100%',
+                            }
+                        ]}
+                    >
+                        <VideoPlayer
+                            changeModalTrigger={changeModal}
+                            subModalVisible={subModalVisible}
+                            sectionId={sectionId}
+                            subModalData={subModalData}
+                            changeSubModal={changeSubModal}
+                            changeFullScreen={changeFullScreen}
+                            changeFollow={changeFollow}
+                            subModalVisibleFullScreen={subModalVisibleFullScreen}
+                            sectionIdFullScreen={sectionIdFullScreen}
+                            changeSubModalFullScreen={changeSubModalFullScreen}
+                            closeModal={handleCloseModal}
+                            openSubModal={handleOpenSubModal}
+                            changeModal={handleChangeModal}
+                            handleFullScreen={handleFullScreen}
+                            handleCloseSubModal={handleCloseSubModal}
+                            handleChangeSelect={handleChangeSelect}
+                            handleChangeSectionModal={handleChangeSectionModal}
+                            handleChangeFollow={handleChangeFollow}
+                            handleChangeSelectRadio={handleChangeSelectRadio}
+                            handleOpenSubModalFullScreen={handleOpenSubModalFullScreen}
+                            handleCloseSubModalFullScreen={handleCloseSubModalFullScreen}
+                            handleChangeSectionModalFullScreen={handleChangeSectionModalFullScreen}
+                            handleChangeSelectFullScreen={handleChangeSelectFullScreen}
+                            handleChangeSelectRadioFullScreen={handleChangeSelectRadioFullScreen}
+                        />
                     </View>
-                </GestureRecognizer>
+                </View>
             </ModalWrapper>
             <ScrollView
                 contentContainerStyle={{

@@ -1,15 +1,6 @@
 import React, {useState} from 'react'
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Switch,
-    Image,
-    TextInput,
-    KeyboardAvoidingView,
-    Button
-} from 'react-native'
-import {CommentData, ICON_USER2, tabsData, videoPlayerEpisodesData, videoPlayerUpNextData} from "../../shared/MockData"
+import {View, Text, TouchableOpacity, Switch} from 'react-native'
+import {CommentData, tabsData, videoPlayerEpisodesData, videoPlayerUpNextData} from "../../shared/MockData"
 import {PreviewVideo} from "./component/PreviewVideo"
 import {CommentVideo, SubCommentVideo} from "./component/CommentVideo"
 import {style} from './style'

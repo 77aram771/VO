@@ -186,11 +186,12 @@ export const styles = StyleSheet.create({
         zIndex: 2,
     },
     input: {
-        width: windowWidth / 2,
+        width: windowWidth / 1.6,
         height: 30,
         // borderWidth: 1,
         // borderColor: 'red',
         marginLeft: 20,
+        color: '#fff'
     },
     MainContainer: {
         flex: 1,
