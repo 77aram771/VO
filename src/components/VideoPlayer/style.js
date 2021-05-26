@@ -72,13 +72,15 @@ export const styles = StyleSheet.create({
         position: 'relative',
         alignSelf: "stretch",
         width: '100%',
-        height: 45,
+        height: 40,
+        zIndex: 0
     },
     timestampRow: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
         alignSelf: "stretch",
+
     },
     text: {
         fontSize: FONT_SIZE,
@@ -96,7 +98,8 @@ export const styles = StyleSheet.create({
         marginRight: 20
     },
     button: {
-        // backgroundColor: 'red'
+        // borderColor: 'red',
+        // borderWidth: 1
     },
     buttonsContainerBase: {
         flex: 1,
@@ -201,8 +204,8 @@ export const styles = StyleSheet.create({
         margin: 10
     },
 
-    TextStyle :{
-        fontSize : 20,
-        color : '#000'
+    TextStyle: {
+        fontSize: 20,
+        color: '#000'
     }
 })

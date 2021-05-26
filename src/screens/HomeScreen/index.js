@@ -87,17 +87,25 @@ export function HomeScreen({navigation}) {
     }
 
     const handleChangeSelect = (id) => {
+        // setChangeSubModal(!changeSubModal)
+        // let newObj = subModalData[sectionId].items.map(item => {
+        //     item.bool = false
+        //     if (item.id === id) {
+        //         item.bool = !item.bool
+        //     }
+        //     return item
+        // })
+        // // setSubModalData(newObj)
+        // setSectionId(null)
+        // console.log('newObj', newObj)
         setChangeSubModal(!changeSubModal)
-        let newObj = subModalData[sectionId].items.map(item => {
+        subModalData[sectionId].items.map(item => {
             item.bool = false
             if (item.id === id) {
                 item.bool = !item.bool
             }
             return item
         })
-        // setSubModalData(newObj)
-        // setSectionIdFullScreen(0)
-        console.log('newObj', newObj)
     }
 
     const handleChangeSelectFullScreen = (id) => {
@@ -116,16 +124,13 @@ export function HomeScreen({navigation}) {
 
     const handleChangeSelectRadio = (id) => {
         // setChangeSubModal(!changeSubModal)
-        let newObj = subModalData[sectionId].items.map(item => {
+        subModalData[sectionId].items.map(item => {
             item.bool = false
             if (item.id === id) {
                 item.bool = !item.bool
             }
             return item
         })
-        // setSubModalData(newObj)
-        // setSectionIdFullScreen(0)
-        console.log('newObj', newObj)
     }
 
     const handleChangeSelectRadioFullScreen = (id) => {

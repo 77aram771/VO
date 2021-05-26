@@ -506,7 +506,6 @@ export default class VideoPlayer extends Component {
             handleChangeSelectRadio,
             handleCloseSubModalFullScreen,
             subModalVisibleFullScreen,
-            changeSubModalFullScreen,
             handleChangeSectionModalFullScreen,
             sectionIdFullScreen,
             handleChangeSelectFullScreen,
@@ -1125,7 +1124,12 @@ export default class VideoPlayer extends Component {
                                                         )
                                                         : (
                                                             <TouchableOpacity
-                                                                style={styles.wrapper}
+                                                                style={[styles.wrapper, {
+                                                                    justifyContent: 'center',
+                                                                    alignItems: 'flex-start',
+                                                                    width: 50,
+                                                                    height: 20,
+                                                                }]}
                                                                 onPress={changeModal}
                                                                 disabled={this.state.isLoading}
                                                             >
@@ -1140,7 +1144,7 @@ export default class VideoPlayer extends Component {
                                                         alignItems: 'flex-end',
                                                         width: 50,
                                                         height: 20,
-                                                        paddingTop: 5
+                                                        paddingTop: 7,
                                                     }]}
                                                     onPress={
                                                         changeFullScreen
@@ -1149,7 +1153,10 @@ export default class VideoPlayer extends Component {
                                                     }
                                                     // onPress={() => handleCloseSubModal()}
                                                 >
-                                                    <Image style={styles.button} source={ICON_MENU_HORIZONTAL.module}/>
+                                                    <Image
+                                                        style={[styles.button]}
+                                                        source={ICON_MENU_HORIZONTAL.module}
+                                                    />
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={styles.mediaControllerContainerMiddle}>
@@ -1260,14 +1267,18 @@ export default class VideoPlayer extends Component {
                                                         >
                                                             {this._getTimestamp()}
                                                         </Text>
-                                                        <TouchableOpacity onPress={() => this._onFullscreenPressed()}>
+                                                        <TouchableOpacity
+                                                            style={[styles.wrapper, {
+                                                                justifyContent: 'flex-start',
+                                                                alignItems: 'flex-end',
+                                                                width: 50,
+                                                                height: 20,
+                                                                paddingTop: 5,
+                                                            }]}
+                                                            onPress={() => this._onFullscreenPressed()}
+                                                        >
                                                             <Image
-                                                                style={[
-                                                                    styles.button, {
-                                                                        marginLeft: 20,
-                                                                        marginRight: 20
-                                                                    }
-                                                                ]}
+                                                                style={[styles.button]}
                                                                 source={ICON_FULLSCREEN.module}
                                                             />
                                                         </TouchableOpacity>
@@ -1287,6 +1298,8 @@ export default class VideoPlayer extends Component {
                                                         flexDirection: 'column',
                                                         justifyContent: 'center',
                                                         alignItems: 'center',
+                                                        borderWidth: 1,
+                                                        borderColor: 'red',
                                                     }}
                                                 >
                                                     <Image source={{uri: this.state.image}}
