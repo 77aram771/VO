@@ -9,7 +9,6 @@ import {
     ScrollView,
     Share,
     TextInput,
-    Dimensions
 } from "react-native"
 import {Audio, Video} from "expo-av"
 import {windowHeight, windowWidth} from "../../shared/Const"
@@ -520,6 +519,7 @@ export default class VideoPlayer extends Component {
                 <ModalWrapper
                     containerStyle={{flexDirection: 'row', alignItems: 'flex-end'}}
                     onRequestClose={handleCloseSubModal}
+                    supportedOrientations={['portrait', 'landscape']}
                     style={{
                         flex: 1,
                         borderTopRightRadius: 18,
@@ -633,7 +633,6 @@ export default class VideoPlayer extends Component {
                                                     </View>
                                                 )
                                             })
-
                                         )
                                         : subModalData[sectionId].items.map(item => {
                                             return (
@@ -724,6 +723,7 @@ export default class VideoPlayer extends Component {
                 <ModalWrapper
                     containerStyle={{flexDirection: 'row', alignItems: 'flex-end'}}
                     onRequestClose={() => this.handleInfoModal(false)}
+                    supportedOrientations={['portrait', 'landscape']}
                     style={{
                         flex: 1,
                         borderTopRightRadius: 18,
@@ -735,9 +735,11 @@ export default class VideoPlayer extends Component {
                     <View
                         style={{
                             width: '100%',
-                            height: windowHeight / 1.4,
+                            height: changeFullScreen ? windowHeight / 2.4 : windowHeight / 1.4,
                             borderTopRightRadius: 20,
                             borderTopLeftRadius: 20,
+                            paddingRight: changeFullScreen ? 30 : 0,
+                            paddingLeft: changeFullScreen ? 30 : 0,
                             paddingBottom: 30,
                             justifyContent: 'flex-start',
                             alignItems: 'center',
@@ -973,7 +975,11 @@ export default class VideoPlayer extends Component {
                                                         height: 20,
                                                         paddingTop: 5
                                                     }]}
-                                                    onPress={() => this.handleShowFullScreenBottomButton(false)}
+                                                    onPress={
+                                                        changeFullScreen
+                                                            ? () => this.handleShowFullScreenBottomButton(!this.state.showFullScreenBottomButtons)
+                                                            : () => handleCloseSubModal()
+                                                    }
                                                 >
                                                     <Image style={styles.button} source={ICON_MENU_HORIZONTAL.module}/>
                                                 </TouchableOpacity>
@@ -1073,7 +1079,9 @@ export default class VideoPlayer extends Component {
                                 <View
                                     style={[
                                         styles.playbackContainer,
-                                        {opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,}
+                                        {
+                                            opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
+                                        }
                                     ]}
                                 >
                                     <View style={styles.timestampRow}>

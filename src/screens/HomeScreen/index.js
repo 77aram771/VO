@@ -1,12 +1,13 @@
 import React, {useState, useContext} from "react"
-import {View, Text, ScrollView, TouchableOpacity, Image, Modal} from "react-native"
+import {View, Text, ScrollView, TouchableOpacity, Modal} from "react-native"
 import GestureRecognizer from 'react-native-swipe-gestures'
 import ModalWrapper from "react-native-modal-wrapper"
 import {config, videoSubModalObject} from "../../shared/MockData"
 import VideoPlayer from "../../components/VideoPlayer"
 import {styles} from "./style"
 import {windowHeight} from "../../shared/Const"
-import {Notifications} from "../HomeScreen/Notifications"
+import {Notifications} from "./Notifications"
+import Context from "../../../Context"
 
 
 export function HomeScreen({navigation}) {
@@ -107,7 +108,7 @@ export function HomeScreen({navigation}) {
     return (
         <>
             <Modal
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 visible={notModalVisible}
                 onRequestClose={() => {alert('Modal has been closed.')}}
@@ -166,18 +167,18 @@ export function HomeScreen({navigation}) {
                             ]}
                         >
                             <VideoPlayer
-                                closeModal={handleCloseModal}
-                                openSubModal={handleOpenSubModal}
-                                changeModal={handleChangeModal}
-                                changeFullScree={handleFullScreen}
                                 changeModalTrigger={changeModal}
-                                handleCloseSubModal={handleCloseSubModal}
                                 subModalVisible={subModalVisible}
                                 sectionId={sectionId}
                                 subModalData={subModalData}
                                 changeSubModal={changeSubModal}
                                 changeFullScreen={changeFullScreen}
                                 changeFollow={changeFollow}
+                                closeModal={handleCloseModal}
+                                openSubModal={handleOpenSubModal}
+                                changeModal={handleChangeModal}
+                                changeFullScree={handleFullScreen}
+                                handleCloseSubModal={handleCloseSubModal}
                                 handleChangeSelect={handleChangeSelect}
                                 handleChangeSectionModal={handleChangeSectionModal}
                                 handleChangeFollow={handleChangeFollow}

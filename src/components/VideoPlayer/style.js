@@ -72,6 +72,7 @@ export const styles = StyleSheet.create({
         position: 'relative',
         alignSelf: "stretch",
         width: '100%',
+        height: 45,
     },
     timestampRow: {
         flexDirection: "row",
@@ -181,8 +182,6 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         position: 'absolute',
-        // borderWidth: 1,
-        // borderColor: 'red',
         bottom: 0,
         zIndex: 2,
     },
