@@ -17,7 +17,7 @@ export const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
-        width: '100%',
+        width: '100%'
     },
     checkedImg: {
         marginLeft: 10,
@@ -33,7 +33,6 @@ export const style = StyleSheet.create({
         right: 0,
         width: 'auto',
         height: '100%',
-        zIndex: 9999
     },
     loginContent: {
         alignItems: 'center',

@@ -217,6 +217,19 @@ export const ProfileInfo = (props) => {
     }
 
     return (
+        <ImageBackground
+            style={{
+
+                flex: 1
+            }}
+            resizeMode={"cover"}
+            imageStyle={{
+                resizeMode: 'cover',
+                position: 'absolute',
+                bottom: '-15%',
+            }}
+            source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
+        >
         <TouchableWithoutFeedback onPress={dismiseKey}>
             <View style={style.container}>
                 {/* <ActivityIndicator
@@ -226,10 +239,6 @@ export const ProfileInfo = (props) => {
                 size="small"
                 color="#ffffff"
                 /> */}
-                <Image
-                style={style.background}
-                source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
-                />
                 <View
                     style={{
                         width: windowWidth,
@@ -455,5 +464,6 @@ export const ProfileInfo = (props) => {
                 </View>
             </View>
             </TouchableWithoutFeedback>
+        </ImageBackground>
     )
 }

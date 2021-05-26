@@ -228,6 +228,19 @@ export const MissingCont = (props) => {
     }
 
     return (
+        <ImageBackground
+            style={{
+
+                flex: 1
+            }}
+            resizeMode={"cover"}
+            imageStyle={{
+                resizeMode: 'cover',
+                position: 'absolute',
+                bottom: '-15%',
+            }}
+            source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
+        >
         <TouchableWithoutFeedback onPress={dismiseKey}>
             <View style={style.container}>
                 {/* <ActivityIndicator
@@ -237,10 +250,6 @@ export const MissingCont = (props) => {
                 size="small"
                 color="#ffffff"
                 /> */}
-                <Image
-                style={style.background}
-                source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
-                />
                 <View style={style.form}>
                 <Text style={style.title}>You must fill the missing fields</Text>
                 <Text style={style.title}>{email}</Text>
@@ -443,5 +452,6 @@ export const MissingCont = (props) => {
                 </View>
             </View>
             </TouchableWithoutFeedback>
+        </ImageBackground>
     )
 }

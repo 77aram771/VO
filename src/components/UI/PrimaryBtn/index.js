@@ -6,11 +6,16 @@ import {style} from './style'
 
 export const PrimaryBtn = ({handlePress, text, disabled}) => {
 
+    const disabledStyle = {
+        opacity: 0.4,
+    }
+
     return (
         <TouchableOpacity
-            style={style.primaryBtn}
+            style={[style.primaryBtn, disabled && disabledStyle]}
             onPress={() => handlePress()}
             disabled={disabled}
+
         >
             <LinearGradient
                 colors={['#2727F5', '#001671']}

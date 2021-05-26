@@ -7,7 +7,7 @@ import {
     Image,
     TextInput,
     TouchableWithoutFeedback,
-    AsyncStorage, TouchableOpacity
+    AsyncStorage, TouchableOpacity, ImageBackground
 } from "react-native"
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn"
 import {ExternalLogin} from "../../../components/ExternalLogin"
@@ -18,8 +18,6 @@ import {API_URL, FB_APP_ID, IOS_GOOGLE_ID, windowHeight, windowWidth} from "../.
 import * as Facebook from "expo-facebook";
 import * as Google from "expo-google-app-auth";
 import * as AppleAuthentication from "expo-apple-authentication";
-
-let load = false
 
 export const Register = ({navigation}) => {
 
@@ -41,6 +39,7 @@ export const Register = ({navigation}) => {
     const [errorCPass, setErrorCPass] = useState(false)
     const [focusCPass, setFocusCPass] = useState(false)
     const [terms, setTerms] = useState(false);
+    const [load, setLoad] = useState(false);
 
     const dismiseKey = () => {
         Keyboard.dismiss();
@@ -147,12 +146,13 @@ export const Register = ({navigation}) => {
         let data = {
             email: email
         };
-
+        setLoad(true)
         try {
             await axios
                 .post(`${API_URL}/api/Account/SignUpConfirmation`, data)
                 .then((response) => {
                     console.log(response)
+                    setLoad(false)
                     if (response.data.accepted == false) {
                         setApiErrorText(response.data.errorMessages[0])
                         console.log(apiErrorText)
@@ -166,9 +166,11 @@ export const Register = ({navigation}) => {
                     }
                 })
                 .catch((error) => {
+                    setLoad(false)
                     console.log(error)
                 })
         } catch (e) {
+            setLoad(false)
             console.log(e)
         }
     }
@@ -206,6 +208,7 @@ export const Register = ({navigation}) => {
         navigation.goBack()
     }
     const externalLogin = (type) => {
+        setLoad(true)
         if (type === 'facebook') {
             fbSignIn()
         } else if (type === 'apple') {
@@ -213,6 +216,7 @@ export const Register = ({navigation}) => {
         } else if (type === 'google') {
             authGoogle()
         } else {
+            setLoad(false)
             setApiErrorText('Something went wrong. Please try again.')
         }
     }
@@ -220,11 +224,12 @@ export const Register = ({navigation}) => {
     const fbSignIn = () => {
         signInWithFacebookAsync()
             .then((res) => {
+                setLoad(false)
                 if (res) {
                     let data = {
                         provider: "Google",
                         providerUserId: res.user.id,
-                        email: 'blabla@gmail.com',
+                        email: res.email,
                         device: {
                             deviceId: "string",
                             deviceType: 1,
@@ -314,6 +319,7 @@ export const Register = ({navigation}) => {
                 }
             })
             .catch((err) => {
+                setLoad(false)
                 console.log(err);
             });
     }
@@ -361,11 +367,12 @@ export const Register = ({navigation}) => {
     const authGoogle = async () => {
         signInWithGoogleAsync()
             .then((res) => {
+                setLoad(false)
                 if (res) {
                     let data = {
                         provider: "Google",
                         providerUserId: res.user.id,
-                        email: 'blabla@gmail.com',
+                        email: res.user.email,
                         device: {
                             deviceId: "string",
                             deviceType: 1,
@@ -455,6 +462,7 @@ export const Register = ({navigation}) => {
                 }
             })
             .catch((err) => {
+                setLoad(false)
                 console.log(err);
             });
     }
@@ -485,11 +493,12 @@ export const Register = ({navigation}) => {
     const authApple = () => {
         signInWithAppleAsync()
             .then((res) => {
+                setLoad(false)
                 if (res) {
                     let data = {
                         provider: "Google",
                         providerUserId: res.user.id,
-                        email: 'blabla@gmail.com',
+                        email: res.email,
                         device: {
                             deviceId: "string",
                             deviceType: 1,
@@ -579,6 +588,7 @@ export const Register = ({navigation}) => {
                 }
             })
             .catch((err) => {
+                setLoad(false)
                 console.log(err);
             });
     }
@@ -603,15 +613,40 @@ export const Register = ({navigation}) => {
     }
 
     return (
+        <ImageBackground
+            style={{
+
+                flex: 1
+            }}
+            resizeMode={"cover"}
+            imageStyle={{
+                resizeMode: 'cover',
+                position: 'absolute',
+                bottom: '-15%',
+            }}
+            source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
+        >
         <TouchableWithoutFeedback onPress={dismiseKey}>
             <View style={style.container}>
-                {/* <ActivityIndicator
-          style={style.loader}
-          animating={load}
-          textContent="Loading..."
-          size="small"
-          color="#ffffff"
-        /> */}
+                {load && (
+                    <ActivityIndicator
+                        style={{
+                            position: 'absolute',
+                            backgroundColor: 'rgba(0,0,0,0.4)',
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            width: 'auto',
+                            height: '100%',
+                            zIndex: 9999,
+                        }}
+                        animating={load}
+                        textContent="Loading..."
+                        size="small"
+                        color="#ffffff"
+                    />
+                )}
                 <Image
                     style={style.background}
                     source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
@@ -756,5 +791,6 @@ export const Register = ({navigation}) => {
                 </View>
             </View>
         </TouchableWithoutFeedback>
+        </ImageBackground>
     )
 }

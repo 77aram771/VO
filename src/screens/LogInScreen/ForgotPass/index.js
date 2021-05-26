@@ -9,7 +9,7 @@ import {
   TextInput,
   Dimensions,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  TouchableWithoutFeedback, ImageBackground,
 } from "react-native";
 import {API_URL, windowHeight, windowWidth} from "../../../shared/Const";
 import { style } from "./style";
@@ -46,6 +46,7 @@ export const ForgotPass = ({navigation}) => {
   const input4 = useRef(null)
   let code = ["", "", "", ""]
   const [codeToken, setCodeToken] = useState('')
+  const [load, setLoad] = useState(false)
 
   useEffect(() => {
 
@@ -315,19 +316,40 @@ export const ForgotPass = ({navigation}) => {
     navigation.navigate("LoginScreen")
   }
   return (
+    <ImageBackground
+        style={{
+
+          flex: 1
+        }}
+        resizeMode={"cover"}
+        imageStyle={{
+          resizeMode: 'cover',
+          position: 'absolute',
+          bottom: '-15%',
+        }}
+        source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
+    >
     <TouchableWithoutFeedback onPress={dismiseKey}>
       <View style={style.container}>
-        {/* <ActivityIndicator
-          style={style.loader}
-          animating={load}
-          textContent="Loading..."
-          size="small"
-          color="#ffffff"
-        /> */}
-        <Image
-          style={style.background}
-          source={require("../../../assets/images/backgrounds/forgotpass-back.png")}
-        />
+        {load && (
+            <ActivityIndicator
+                style={{
+                  position: 'absolute',
+                  backgroundColor: 'rgba(0,0,0,0.4)',
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  width: 'auto',
+                  height: '100%',
+                  zIndex: 9999,
+                }}
+                animating={load}
+                textContent="Loading..."
+                size="small"
+                color="#ffffff"
+            />
+        )}
         <View
             style={{
               width: windowWidth,
@@ -529,5 +551,6 @@ export const ForgotPass = ({navigation}) => {
         )}
       </View>
     </TouchableWithoutFeedback>
+    </ImageBackground>
   );
 };

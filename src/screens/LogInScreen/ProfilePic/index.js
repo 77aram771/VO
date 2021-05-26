@@ -9,7 +9,7 @@ import {
     Dimensions,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    ScrollView
+    ScrollView, ImageBackground
 } from "react-native";
 import {style} from './style'
 import {API_URL, windowHeight, windowWidth} from "../../../shared/Const"
@@ -168,7 +168,11 @@ export const ProfilePic = ({navigation}) => {
                 const token = await AsyncStorage.getItem('Token')
                 const fileToUpload = avatar;
                 const data = new FormData();
-                data.append('Avatar', fileToUpload);
+                data.append('Avatar', {
+                    uri: fileToUpload,
+                    type: 'image/jpg',
+                    name: 'image.jpg',
+                });
 
                 await axios
                     .post(`${API_URL}/api/User/Avatar`, data,
@@ -204,12 +208,21 @@ export const ProfilePic = ({navigation}) => {
     }
 
     return (
+        <ImageBackground
+            style={{
+
+                flex: 1
+            }}
+            resizeMode={"cover"}
+            imageStyle={{
+                resizeMode: 'cover',
+                position: 'absolute',
+                bottom: '-15%',
+            }}
+            source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
+        >
         <TouchableWithoutFeedback onPress={dismiseKey}>
             <View style={style.container}>
-                <Image
-                    style={style.background}
-                    source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
-                />
                 <View style={style.form}>
                     <Text style={style.title}>Choose your photo</Text>
 
@@ -564,5 +577,6 @@ export const ProfilePic = ({navigation}) => {
                 </View>
             </View>
         </TouchableWithoutFeedback>
+        </ImageBackground>
     )
 }

@@ -41,6 +41,7 @@ export const Login = ({navigation}) => {
     const {logIN} = useContext(Context)
     const {setLogin} = useContext(Context)
     const {setUserInfo} = useContext(Context)
+    const [load, setLoad] = useState(false)
 
     const dispatch = useDispatch()
     const data = useSelector((state) => state.AuthReducer.data)
@@ -123,6 +124,7 @@ export const Login = ({navigation}) => {
         // }
         // await AsyncStorage.setItem('Token', 'blabla')
         // await AsyncStorage.setItem('user', JSON.stringify(data))
+        setLoad(true)
         let body = {
             email: email,
             password: password,
@@ -141,18 +143,22 @@ export const Login = ({navigation}) => {
                 .then((response) => {
                     console.log('res-', response.data)
                     if (response.data.accepted == false) {
+                        setLoad(false)
                         setApiErrorText(response.data.errorMessages[0])
                     } else if (response.data.accepted == true) {
+                        setLoad(false)
                         const Token = response.data.data[0].accessToken
                         AsyncStorage.setItem('Token', Token)
                         getUser(Token)
                         setLogin()
                         setApiErrorText('')
                     } else {
+                        setLoad(false)
                         setApiErrorText("Something went wrong. Please try again.")
                     }
                 })
                 .catch((error) => {
+                    setLoad(false)
                     console.log(error)
                     setApiErrorText("Something went wrong. Please try again.")
                 })
@@ -192,6 +198,7 @@ export const Login = ({navigation}) => {
     }
 
     const externalLogin = (type) => {
+        setLoad(true)
         if (type === 'facebook') {
             fbSignIn()
         } else if (type === 'apple') {
@@ -199,6 +206,7 @@ export const Login = ({navigation}) => {
         } else if (type === 'google') {
             authGoogle()
         } else {
+            setLoad(false)
             setApiErrorText('Something went wrong. Please try again.')
         }
     }
@@ -206,11 +214,12 @@ export const Login = ({navigation}) => {
     const fbSignIn = () => {
         signInWithFacebookAsync()
             .then((res) => {
+                setLoad(false)
                 if (res) {
                     let data = {
                         provider: "Google",
                         providerUserId: res.user.id,
-                        email: 'blabla@gmail.com',
+                        email: res.email,
                         device: {
                             deviceId: "string",
                             deviceType: 1,
@@ -300,6 +309,7 @@ export const Login = ({navigation}) => {
                 }
             })
             .catch((err) => {
+                setLoad(false)
                 console.log(err);
             });
     }
@@ -347,11 +357,12 @@ export const Login = ({navigation}) => {
     const authGoogle = async () => {
         signInWithGoogleAsync()
             .then((res) => {
+                setLoad(false)
                 if (res) {
                     let data = {
                         provider: "Google",
                         providerUserId: res.user.id,
-                        email: 'blabla@gmail.com',
+                        email: res.user.email,
                         device: {
                             deviceId: "string",
                             deviceType: 1,
@@ -441,6 +452,7 @@ export const Login = ({navigation}) => {
                 }
             })
             .catch((err) => {
+                setLoad(false)
                 console.log(err);
             });
     }
@@ -471,11 +483,12 @@ export const Login = ({navigation}) => {
     const authApple = () => {
         signInWithAppleAsync()
             .then((res) => {
+                setLoad(false)
                 if (res) {
                     let data = {
                         provider: "Google",
                         providerUserId: res.user.id,
-                        email: 'blabla@gmail.com',
+                        email: res.email,
                         device: {
                             deviceId: "string",
                             deviceType: 1,
@@ -565,6 +578,7 @@ export const Login = ({navigation}) => {
                 }
             })
             .catch((err) => {
+                setLoad(false)
                 console.log(err);
             });
     }
@@ -589,21 +603,41 @@ export const Login = ({navigation}) => {
     }
 
     return (
+        <ImageBackground
+            style={{
+
+                flex: 1
+            }}
+            resizeMode={"cover"}
+            imageStyle={{
+                resizeMode: 'cover',
+                position: 'absolute',
+                bottom: '-15%',
+            }}
+            source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
+        >
         <TouchableWithoutFeedback onPress={dismiseKey}>
-            <ImageBackground
-                style={{
-                    flex:1,
-                }}
-                source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
-            >
                 <View style={style.container}>
-                    {/*<ActivityIndicator
-                        style={style.loader}
-                        animating={load}
-                        textContent="Loading..."
-                        size="small"
-                        color="#ffffff"
-                    /> */}
+
+                    {load && (
+                        <ActivityIndicator
+                            style={{
+                                position: 'absolute',
+                                backgroundColor: 'rgba(0,0,0,0.4)',
+                                top: 0,
+                                left: 0,
+                                bottom: 0,
+                                right: 0,
+                                width: 'auto',
+                                height: '100%',
+                                zIndex: 9999,
+                            }}
+                            animating={load}
+                            textContent="Loading..."
+                            size="small"
+                            color="#ffffff"
+                        />
+                    )}
                     <View style={style.loginContent}>
                         <View style={style.formGroup}>
                             {focusLogin && (
@@ -686,7 +720,7 @@ export const Login = ({navigation}) => {
                         <ExternalLogin handlePress={externalLogin}/>
                     </View>
                 </View>
-            </ImageBackground>
         </TouchableWithoutFeedback>
+        </ImageBackground>
     )
 }

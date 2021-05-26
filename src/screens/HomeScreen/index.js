@@ -8,6 +8,42 @@ import {styles} from "./style"
 import {windowHeight} from "../../shared/Const"
 import {Notifications} from "./Notifications"
 import Context from "../../../Context"
+// import {style} from "../ProfileScreen/EditProfile/style";
+// import {LinearGradient} from "expo-linear-gradient";
+// import {Topics} from "../../components/UI/Topics"
+
+// const DATA = [
+//     {
+//         id: "1",
+//         name: "All",
+//         selected: true,
+//     },
+//     {
+//         id: "2",
+//         name: "Music",
+//         selected: false,
+//     },
+//     {
+//         id: "3",
+//         name: "Shows",
+//         selected: false,
+//     },
+//     {
+//         id: "4",
+//         name: "Movies",
+//         selected: false,
+//     },
+//     {
+//         id: "5",
+//         name: "Sport",
+//         selected: false,
+//     },
+//     {
+//         id: "6",
+//         name: "Popular",
+//         selected: false,
+//     }
+// ];
 
 
 export function HomeScreen({navigation}) {
@@ -24,7 +60,41 @@ export function HomeScreen({navigation}) {
     const [sectionIdFullScreen, setSectionIdFullScreen] = useState(0)
     const [changeFollow, setChangeFollow] = useState(null)
     const {notModalVisible} = useContext(Context)
+    // const [items, setItems] = useState(DATA)
 
+    // const setSelectedTopics = (prop) => {
+    //     let topics = [...items];
+    //     if (prop === 1) {
+    //         for (let data of topics) {
+    //             data.selected = data.selected == null ? false : false;
+    //         }
+    //         // topics[0].selected = true
+    //     }
+    //     console.log(topics)
+    //     // for (let data of topics) {
+    //     //     console.log(prop)
+    //     //     if (prop == 1) {
+    //     //         console.log('false')
+    //     //         data.selected = data.selected == null ? false : false;
+    //     //
+    //     //         break;
+    //     //     } else if (data.id === prop) {
+    //     //         data.selected = data.selected == null ? true : !data.selected;
+    //     //
+    //     //         break;
+    //     //     }
+    //     // }
+    //     topics.forEach((topic) => {
+    //         if (topic.selected !== undefined) {
+    //             if (topic.selected === true) {
+    //                 // this.btnDisabled = 0;
+    //             } else if (topic.selected === false) {
+    //                 // this.btnDisabled = 1;
+    //             }
+    //         }
+    //     });
+    //     setItems(topics)
+    // }
 
     const onSwipeUp = () => {
         console.log('test UP')
@@ -296,6 +366,18 @@ export function HomeScreen({navigation}) {
                     backgroundColor: '#000'
                 }}
             >
+                {/*<View style={style.container}>*/}
+                {/*    <LinearGradient*/}
+                {/*        colors={["#080836", "#000000", "#000000", "#000000"]}*/}
+                {/*        location={[0, 0.1, 0.4, 1]}*/}
+                {/*        style={{*/}
+                {/*            position: "absolute",*/}
+                {/*            width: windowWidth,*/}
+                {/*            height: windowHeight,*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*    <Topics handlePress={setSelectedTopics} items={items}/>*/}
+                {/*</View>*/}
                 <View
                     style={{
                         flex: 1,

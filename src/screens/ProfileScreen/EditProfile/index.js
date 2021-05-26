@@ -48,6 +48,7 @@ export const EditProfile = ({navigation}) => {
     const [errorLName, setErrorLName] = useState(false)
     const [focusLName, setFocusLName] = useState(false)
     const {setUserInfo} = useContext(Context)
+    const [load, setLoad] = useState(false)
 
     const dismiseKey = () => {
         Keyboard.dismiss();
@@ -360,6 +361,7 @@ export const EditProfile = ({navigation}) => {
             birthDate: "2016-05-24T20:06:04.865Z",
             id: user.id
         };
+        setLoad(true)
         console.log(data)
         try {
             const token = await AsyncStorage.getItem('Token')
@@ -372,6 +374,7 @@ export const EditProfile = ({navigation}) => {
                     }
                 })
                 .then((response) => {
+                    setLoad(false)
                     console.log('res-', response)
                     if (response.data.accepted == false) {
                         setApiErrorText(response.data.errorMessages[0])
@@ -385,10 +388,12 @@ export const EditProfile = ({navigation}) => {
                     }
                 })
                 .catch((error) => {
+                    setLoad(false)
                     console.log('error-', error)
                     setApiErrorText("Something went wrong. Please try again.")
                 })
         } catch (e) {
+            setLoad(false)
             console.log(e)
         }
     }
@@ -807,6 +812,25 @@ export const EditProfile = ({navigation}) => {
                         height: windowHeight,
                     }}
                 />
+                {load && (
+                    <ActivityIndicator
+                        style={{
+                            position: 'absolute',
+                            backgroundColor: 'rgba(0,0,0,0.4)',
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            width: 'auto',
+                            height: '100%',
+                            zIndex: 9999,
+                        }}
+                        animating={load}
+                        textContent="Loading..."
+                        size="small"
+                        color="#ffffff"
+                    />
+                )}
                 <View
                     style={{
                         alignItems: 'center',

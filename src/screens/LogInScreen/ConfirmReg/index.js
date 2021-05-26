@@ -1,5 +1,14 @@
 import React, {useRef, useState} from "react"
-import {Keyboard, Text, View, Image, TouchableWithoutFeedback, TouchableOpacity} from "react-native"
+import {
+    Keyboard,
+    Text,
+    View,
+    Image,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+    ActivityIndicator,
+    ImageBackground
+} from "react-native"
 import {style} from './style'
 import {PassCodeInput} from "../../../components/UI/PassCodeInput"
 import {PrimaryBtn} from "../../../components/UI/PrimaryBtn"
@@ -21,6 +30,7 @@ export const ConfirmReg = (props) => {
     const input3 = useRef(null)
     const input4 = useRef(null)
     let code = ["", "", "", ""]
+    const [load, setLoad] = useState(false)
 
     const dismiseKey = () => {
         Keyboard.dismiss()
@@ -81,6 +91,9 @@ export const ConfirmReg = (props) => {
     const goToLogin = () => {
         navigation.navigate("LoginScreen")
     }
+    const goBack = () => {
+        navigation.goBack()
+    }
 
     const focusInput = async (index) => {
         if (index == 1) {
@@ -135,19 +148,40 @@ export const ConfirmReg = (props) => {
     }
 
     return (
+        <ImageBackground
+            style={{
+
+                flex: 1
+            }}
+            resizeMode={"cover"}
+            imageStyle={{
+                resizeMode: 'cover',
+                position: 'absolute',
+                bottom: '-15%',
+            }}
+            source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
+        >
         <TouchableWithoutFeedback onPress={dismiseKey}>
             <View style={style.container}>
-                {/* <ActivityIndicator
-          style={style.loader}
-          animating={load}
-          textContent="Loading..."
-          size="small"
-          color="#ffffff"
-        /> */}
-                <Image
-                    style={style.background}
-                    source={require('../../../assets/images/backgrounds/forgotpass-back.png')}
-                />
+                {load && (
+                    <ActivityIndicator
+                        style={{
+                            position: 'absolute',
+                            backgroundColor: 'rgba(0,0,0,0.4)',
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            width: 'auto',
+                            height: '100%',
+                            zIndex: 9999,
+                        }}
+                        animating={load}
+                        textContent="Loading..."
+                        size="small"
+                        color="#ffffff"
+                    />
+                )}
                 <View
                     style={{
                         width: windowWidth,
@@ -191,6 +225,7 @@ export const ConfirmReg = (props) => {
                 </View>
             </View>
         </TouchableWithoutFeedback>
+        </ImageBackground>
     );
 };
 
